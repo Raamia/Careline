@@ -1,9 +1,36 @@
 'use client';
 
 import { useUser } from '@auth0/nextjs-auth0/client';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function Hero() {
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    // Redirect logged-in users to dashboard
+    if (!isLoading && user) {
+      router.push('/dashboard');
+    }
+  }, [user, isLoading, router]);
+
+  // Show loading while checking auth status
+  if (isLoading) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </main>
+    );
+  }
+
+  // Don't render hero if user is logged in (will redirect)
+  if (user) {
+    return null;
+  }
 
   return (
     <main className="relative min-h-screen flex flex-col">

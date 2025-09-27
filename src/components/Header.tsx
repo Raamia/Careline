@@ -57,16 +57,13 @@ export default function Header() {
             {user ? (
               // Authenticated state
               <div className="flex items-center space-x-4">
-                <span className="text-gray-600">
-                  Hello, {user.name}
-                </span>
-                    {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-                    <a
-                      href="/api/auth/logout"
-                      className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
-                    >
-                      Logout
-                    </a>
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                <a
+                  href="/api/auth/logout"
+                  className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 font-medium transition-colors"
+                >
+                  Logout
+                </a>
               </div>
             ) : (
               // Unauthenticated state (show buttons even if there's an error)
