@@ -814,7 +814,7 @@ export default function DashboardPage() {
                     </h3>
                     <div className="mt-2 text-sm text-slate-300">
                       <p>
-                        You're currently set as a patient. If you signed up as a healthcare provider, 
+                        You&apos;re currently set as a patient. If you signed up as a healthcare provider, 
                         click the button below to access the Provider Console.
                       </p>
                     </div>
