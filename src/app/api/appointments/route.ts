@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@auth0/nextjs-auth0';
-import { serverReferralService } from '../../../lib/database';
+import { serverReferralService } from '../../lib/database';
 
 export async function POST(request: NextRequest) {
   try {
