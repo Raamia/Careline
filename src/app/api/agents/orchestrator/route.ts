@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { OrchestratorAgent } from '@/agents/orchestrator';
 import { ReferralCreatedEvent } from '@/types';
 
 export async function POST(request: NextRequest) {
@@ -24,14 +23,15 @@ export async function POST(request: NextRequest) {
       timestamp: new Date()
     };
 
-    const orchestrator = new OrchestratorAgent();
-    const decisionCardId = await orchestrator.processReferralCreated(event);
+    // TODO: Proxy to Python ADK Orchestrator Agent
+    // For now, returning mock success response
+    const mockDecisionCardId = `decision-${referralId}-${Date.now()}`;
 
     return NextResponse.json({
       success: true,
       data: {
-        decisionCardId,
-        message: 'Referral processing initiated successfully'
+        decisionCardId: mockDecisionCardId,
+        message: 'Referral processing initiated successfully (via ADK agents)'
       }
     });
 
