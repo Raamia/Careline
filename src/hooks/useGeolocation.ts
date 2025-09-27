@@ -79,10 +79,11 @@ export function useGeolocation() {
         return locationData;
       }
 
-    } catch (geoError: any) {
+    } catch (geoError: unknown) {
+      const errorCode = (geoError as GeolocationPositionError)?.code ?? -1;
       const error: GeolocationError = {
-        code: geoError.code || -1,
-        message: getGeolocationErrorMessage(geoError.code || -1)
+        code: errorCode,
+        message: getGeolocationErrorMessage(errorCode)
       };
       
       setError(error);

@@ -66,7 +66,6 @@ export default function DashboardPage() {
   const { 
     location, 
     loading: locationLoading, 
-    error: locationError, 
     getLocation 
   } = useGeolocation();
 
