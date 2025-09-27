@@ -249,200 +249,141 @@ export default function DashboardPage() {
     const completedReferrals = referrals.filter(r => r.status === 'completed').length;
 
     return (
-      <div className="space-y-6">
-        {/* Patient Overview Stats */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Active Referrals</dt>
-                    <dd className="text-lg font-medium text-gray-900">{activeReferrals}</dd>
-                  </dl>
-                </div>
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-100">Healthcare Overview</h1>
+            <p className="text-slate-400 mt-1">Manage your care journey with AI-powered insights</p>
+          </div>
+          <button
+            onClick={handleCreateReferral}
+            className="enterprise-button flex items-center space-x-2"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            <span>New Referral</span>
+          </button>
+        </div>
+
+        {/* Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="enterprise-metric">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">Active Cases</p>
+                <p className="text-3xl font-bold text-slate-100 mt-2">{activeReferrals}</p>
+                <p className="text-slate-400 text-xs mt-1">Referrals in progress</p>
+              </div>
+              <div className="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
               </div>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Completed</dt>
-                    <dd className="text-lg font-medium text-gray-900">{completedReferrals}</dd>
-                  </dl>
-                </div>
+          <div className="enterprise-metric">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">Completed</p>
+                <p className="text-3xl font-bold text-slate-100 mt-2">{completedReferrals}</p>
+                <p className="text-slate-400 text-xs mt-1">Successful outcomes</p>
+              </div>
+              <div className="w-12 h-12 bg-green-600/20 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
               </div>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Total Referrals</dt>
-                    <dd className="text-lg font-medium text-gray-900">{referrals.length}</dd>
-                  </dl>
-                </div>
+          <div className="enterprise-metric">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">Total Care Events</p>
+                <p className="text-3xl font-bold text-slate-100 mt-2">{referrals.length}</p>
+                <p className="text-slate-400 text-xs mt-1">Lifetime referrals</p>
               </div>
-            </div>
-          </div>
-
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-orange-500 rounded-md flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Account Status</dt>
-                    <dd className="text-lg font-medium text-gray-900">Active</dd>
-                  </dl>
-                </div>
+              <div className="w-12 h-12 bg-purple-600/20 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Current Referrals */}
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-gray-900">Current Referrals</h3>
-              <button 
-                onClick={handleCreateReferral}
-                className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors"
-              >
-                + New Referral
-              </button>
+        {/* Active Referrals */}
+        <div className="enterprise-card">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-xl font-semibold text-slate-100">Active Referrals</h3>
+                <p className="text-slate-400 text-sm mt-1">Manage your ongoing healthcare requests</p>
+              </div>
             </div>
-            
+
             <div className="space-y-4">
               {referrals.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">No referrals yet. Create your first referral to get started!</p>
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <p className="text-slate-400">No active referrals. Start your care journey with AI assistance.</p>
                 </div>
               ) : (
                 referrals.map((referral) => (
-                  <div key={referral.id} className="border border-gray-200 rounded-lg p-4 hover:border-red-300 transition-colors">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <h4 className="text-sm font-medium text-gray-900 capitalize">
-                          {referral.specialty} for {referral.chief_complaint}
-                        </h4>
-                        <p className="text-sm text-gray-500 mt-1">
-                          {referral.doctor?.name || 'No doctor assigned yet'}
-                        </p>
-                        <div className="flex items-center mt-2">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            referral.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                            referral.status === 'accepted' ? 'bg-blue-100 text-blue-800' :
-                            referral.status === 'completed' ? 'bg-green-100 text-green-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
-                            {referral.status === 'pending' ? 'Pending Review' :
-                             referral.status === 'accepted' ? 'Accepted' :
-                             referral.status === 'completed' ? 'Completed' :
-                             referral.status}
-                          </span>
-                          <span className="ml-2 text-xs text-gray-500 capitalize">
-                            Priority: {referral.priority}
-                          </span>
+                  <div key={referral.id} className="enterprise-card border-slate-600 hover:border-blue-500">
+                    <div className="p-4">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-3 mb-2">
+                            <h4 className="text-slate-100 font-medium capitalize">
+                              {referral.specialty}
+                            </h4>
+                            <span className={`status-badge ${
+                              referral.status === 'pending' ? 'pending' :
+                              referral.status === 'accepted' ? 'active' :
+                              referral.priority === 'urgent' ? 'urgent' : 'active'
+                            }`}>
+                              {referral.status === 'pending' ? 'Under Review' :
+                               referral.status === 'accepted' ? 'In Progress' :
+                               referral.status}
+                            </span>
+                          </div>
+                          <p className="text-slate-300 text-sm mb-3">{referral.chief_complaint}</p>
+                          <div className="flex items-center space-x-4 text-xs text-slate-400">
+                            <span>Provider: {referral.doctor?.name || 'Matching in progress'}</span>
+                            <span>Priority: {referral.priority}</span>
+                            <span>{new Date(referral.created_at).toLocaleDateString()}</span>
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <button 
-                          onClick={() => handleAskGemini(referral)}
-                          className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
-                        >
-                          ✨ Ask Gemini
-                        </button>
-                        <button 
-                          onClick={() => handleGenerateReferral(referral)}
-                          className="text-gray-400 hover:text-gray-600"
-                        >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </button>
+                        <div className="flex space-x-2 ml-4">
+                          <button
+                            onClick={() => handleAskGemini(referral)}
+                            className="enterprise-button secondary text-xs px-3 py-1"
+                          >
+                            AI Search
+                          </button>
+                          <button
+                            onClick={() => handleGenerateReferral(referral)}
+                            className="text-slate-400 hover:text-blue-400 transition-colors"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
                 ))
               )}
             </div>
-          </div>
-        </div>
-
-        {/* AI-Powered Actions */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <div className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg p-6 text-white">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div className="ml-4 flex-1">
-                <h3 className="text-lg font-medium">Gemini Directory Agent</h3>
-                <p className="text-purple-100 text-sm mt-1">Find in-network specialists near you</p>
-              </div>
-            </div>
-            <button 
-              onClick={() => handleAskGemini({ specialty: 'General', id: '', chief_complaint: '', status: '', priority: '', created_at: '' })}
-              className="mt-4 bg-white text-purple-600 px-4 py-2 rounded-md hover:bg-gray-50 transition-colors"
-            >
-              Find Specialists
-            </button>
-          </div>
-
-          <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-6 text-white">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <div className="ml-4 flex-1">
-                <h3 className="text-lg font-medium">Cost Explainer</h3>
-                <p className="text-blue-100 text-sm mt-1">Get AI cost analysis for procedures</p>
-              </div>
-            </div>
-            <button 
-              onClick={handleCostExplainer}
-              className="mt-4 bg-white text-blue-600 px-4 py-2 rounded-md hover:bg-gray-50 transition-colors"
-            >
-              Explain Costs
-            </button>
           </div>
         </div>
       </div>
@@ -454,148 +395,159 @@ export default function DashboardPage() {
     const activePatients = referrals.filter(r => r.status === 'accepted').length;
 
     return (
-      <div className="space-y-6">
-        {/* Doctor Overview Stats */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-red-500 rounded-md flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">New Referrals</dt>
-                    <dd className="text-lg font-medium text-gray-900">{newReferrals}</dd>
-                  </dl>
-                </div>
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-100">Provider Console</h1>
+            <p className="text-slate-400 mt-1">AI-powered referral management and patient insights</p>
+          </div>
+          <div className="flex space-x-3">
+            <button
+              onClick={() => setShowRecordsModal(true)}
+              className="enterprise-button secondary flex items-center space-x-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Analyze Documents</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Clinical Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="enterprise-metric">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">Pending Review</p>
+                <p className="text-3xl font-bold text-slate-100 mt-2">{newReferrals}</p>
+                <p className="text-slate-400 text-xs mt-1">Requires attention</p>
+              </div>
+              <div className="w-12 h-12 bg-amber-600/20 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
               </div>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Active Patients</dt>
-                    <dd className="text-lg font-medium text-gray-900">{activePatients}</dd>
-                  </dl>
-                </div>
+          <div className="enterprise-metric">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">Active Patients</p>
+                <p className="text-3xl font-bold text-slate-100 mt-2">{activePatients}</p>
+                <p className="text-slate-400 text-xs mt-1">Under care</p>
+              </div>
+              <div className="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                </svg>
               </div>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Total Referrals</dt>
-                    <dd className="text-lg font-medium text-gray-900">{referrals.length}</dd>
-                  </dl>
-                </div>
+          <div className="enterprise-metric">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">Total Cases</p>
+                <p className="text-3xl font-bold text-slate-100 mt-2">{referrals.length}</p>
+                <p className="text-slate-400 text-xs mt-1">All referrals</p>
+              </div>
+              <div className="w-12 h-12 bg-green-600/20 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
               </div>
             </div>
           </div>
 
-          <div className="bg-white overflow-hidden shadow rounded-lg">
-            <div className="p-5">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <div className="w-8 h-8 bg-purple-500 rounded-md flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="ml-5 w-0 flex-1">
-                  <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">AI Available</dt>
-                    <dd className="text-lg font-medium text-gray-900">Ready</dd>
-                  </dl>
-                </div>
+          <div className="enterprise-metric">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">AI Insights</p>
+                <p className="text-3xl font-bold text-slate-100 mt-2">Ready</p>
+                <p className="text-slate-400 text-xs mt-1">System online</p>
+              </div>
+              <div className="w-12 h-12 bg-purple-600/20 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Referral Inbox */}
-        <div className="bg-white shadow rounded-lg">
-          <div className="px-4 py-5 sm:p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Incoming Referrals</h3>
+        {/* Patient Queue */}
+        <div className="enterprise-card">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-xl font-semibold text-slate-100">Patient Queue</h3>
+                <p className="text-slate-400 text-sm mt-1">Review and manage incoming referrals</p>
+              </div>
+            </div>
             
             <div className="space-y-4">
               {referrals.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">No referrals yet. Patients will appear here when they create referrals.</p>
+                <div className="text-center py-12">
+                  <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                    </svg>
+                  </div>
+                  <p className="text-slate-400">No pending referrals. Your queue is clear.</p>
                 </div>
               ) : (
                 referrals.map((referral) => (
-                  <div key={referral.id} className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center">
-                          <h4 className="text-sm font-medium text-gray-900">
-                            {referral.patient?.name || 'Patient'}
-                          </h4>
-                          <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            referral.priority === 'urgent' ? 'bg-red-100 text-red-800' :
-                            referral.priority === 'stat' ? 'bg-red-200 text-red-900' :
-                            'bg-yellow-100 text-yellow-800'
-                          }`}>
-                            {referral.priority === 'stat' ? 'STAT' : referral.priority}
-                          </span>
+                  <div key={referral.id} className="enterprise-card border-slate-600 hover:border-blue-500">
+                    <div className="p-4">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-3 mb-2">
+                            <h4 className="text-slate-100 font-medium">
+                              {referral.patient?.name || 'Patient'}
+                            </h4>
+                            <span className={`status-badge ${
+                              referral.priority === 'urgent' ? 'urgent' :
+                              referral.priority === 'stat' ? 'urgent' :
+                              'pending'
+                            }`}>
+                              {referral.priority === 'stat' ? 'STAT' : referral.priority}
+                            </span>
+                            <span className={`status-badge ${
+                              referral.status === 'pending' ? 'pending' :
+                              referral.status === 'accepted' ? 'active' :
+                              'active'
+                            }`}>
+                              {referral.status}
+                            </span>
+                          </div>
+                          <div className="space-y-1 mb-3">
+                            <p className="text-slate-300 text-sm">
+                              <span className="text-slate-400">Chief Complaint:</span> {referral.chief_complaint}
+                            </p>
+                            <p className="text-slate-300 text-sm">
+                              <span className="text-slate-400">Specialty:</span> {referral.specialty}
+                            </p>
+                          </div>
+                          <div className="flex items-center space-x-4 text-xs text-slate-400">
+                            <span>Created: {new Date(referral.created_at).toLocaleDateString()}</span>
+                          </div>
                         </div>
-                        <p className="text-sm text-gray-600 mt-1">
-                          <strong>Chief Complaint:</strong> {referral.chief_complaint}
-                        </p>
-                        <p className="text-sm text-gray-600 mt-1">
-                          <strong>Specialty:</strong> {referral.specialty}
-                        </p>
-                        <div className="flex items-center mt-2 space-x-4">
-                          <span className="text-xs text-gray-500">
-                            Created: {new Date(referral.created_at).toLocaleDateString()}
-                          </span>
-                          <span className={`text-xs ${
-                            referral.status === 'pending' ? 'text-yellow-600' :
-                            referral.status === 'accepted' ? 'text-blue-600' :
-                            'text-green-600'
-                          }`}>
-                            Status: {referral.status}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex flex-col space-y-2 ml-4">
-                        <button 
-                          onClick={() => handleGenerateReferral(referral)}
-                          className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
-                        >
-                          View Details
-                        </button>
-                        {referral.status === 'pending' && (
-                          <button className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">
-                            Accept
+                        <div className="flex space-x-2 ml-4">
+                          <button 
+                            onClick={() => handleGenerateReferral(referral)}
+                            className="enterprise-button text-xs px-3 py-1"
+                          >
+                            Review
                           </button>
-                        )}
+                          {referral.status === 'pending' && (
+                            <button className="enterprise-button secondary text-xs px-3 py-1">
+                              Accept
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -604,111 +556,136 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-
-        {/* AI Tools for Doctors */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-lg p-6 text-white">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <div className="ml-4 flex-1">
-                <h3 className="text-lg font-medium">Records Summarizer</h3>
-                <p className="text-green-100 text-sm mt-1">AI-generated clinical summaries</p>
-              </div>
-            </div>
-            <button 
-              onClick={handleRecordsSummarizer}
-              className="mt-4 bg-white text-green-600 px-4 py-2 rounded-md hover:bg-gray-50 transition-colors"
-            >
-              Process Records
-            </button>
-          </div>
-
-          <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-lg p-6 text-white">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <div className="ml-4 flex-1">
-                <h3 className="text-lg font-medium">Referral Generator</h3>
-                <p className="text-indigo-100 text-sm mt-1">Create standardized referral packets</p>
-              </div>
-            </div>
-            <button 
-              onClick={handleCostExplainer}
-              className="mt-4 bg-white text-indigo-600 px-4 py-2 rounded-md hover:bg-gray-50 transition-colors"
-            >
-              Generate Referral
-            </button>
-          </div>
-        </div>
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <Image
-                src="/croppedcarline.png"
-                alt="Careline"
-                width={256}
-                height={98}
-                className="h-12 w-auto mr-3"
-              />
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900">
-                  {userData.role === 'patient' ? 'Patient Dashboard' : 'Provider Dashboard'}
-                </h1>
-                <p className="text-sm text-gray-500">
-                  {userData.role === 'patient' ? 'Manage your referrals and health records' : 'Review patient referrals and records'}
-                </p>
+    <div className="min-h-screen bg-slate-950">
+      {/* Sidebar */}
+      <div className="fixed inset-y-0 left-0 w-64 sidebar-nav z-50">
+        <div className="flex flex-col h-full">
+          {/* Logo */}
+          <div className="flex items-center px-6 py-8 border-b border-slate-700">
+            <Image
+              src="/croppedcarline.png"
+              alt="Careline"
+              width={256}
+              height={98}
+              className="h-8 w-auto mr-3 brightness-0 invert"
+            />
+            <div>
+              <h1 className="text-lg font-bold text-slate-100">Careline</h1>
+              <p className="text-xs text-slate-400 uppercase tracking-wider">Healthcare AI</p>
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <nav className="flex-1 px-2 py-6">
+            <div className="space-y-2">
+              <a href="#" className="nav-item active">
+                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                Overview
+              </a>
+              <a href="#" className="nav-item">
+                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                {userData.role === 'patient' ? 'My Referrals' : 'Referral Queue'}
+              </a>
+              <a href="#" className="nav-item">
+                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                AI Intelligence
+              </a>
+              <a href="#" className="nav-item">
+                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                Analytics
+              </a>
+            </div>
+
+            {/* AI Tools Section */}
+            <div className="mt-8">
+              <h3 className="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">
+                AI Tools
+              </h3>
+              <div className="space-y-2">
+                <button onClick={() => setShowRecordsModal(true)} className="nav-item w-full text-left">
+                  <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Document Analysis
+                </button>
+                <button onClick={() => setShowCostModal(true)} className="nav-item w-full text-left">
+                  <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                  </svg>
+                  Cost Intelligence
+                </button>
+                <button onClick={() => handleAskGemini({ specialty: 'General', id: '', chief_complaint: '', status: '', priority: '', created_at: '' })} className="nav-item w-full text-left">
+                  <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                  Provider Search
+                </button>
               </div>
             </div>
-            
-            <div className="flex items-center space-x-4">
+          </nav>
+
+          {/* User Profile */}
+          <div className="px-4 py-4 border-t border-slate-700">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm font-semibold">
+                    {userData.name?.charAt(0) || 'U'}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-slate-200">{userData.name}</p>
+                  <p className="text-xs text-slate-400 capitalize">{userData.role}</p>
+                </div>
+              </div>
               {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
               <a
                 href="/api/auth/logout"
-                className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 font-medium transition-colors"
+                className="text-slate-400 hover:text-slate-200 transition-colors"
               >
-                Logout
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
               </a>
             </div>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
+      <div className="ml-64 min-h-screen">
+        <main className="p-8">
           {/* Database Status Notice */}
           {userData.id === 'demo-user' && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg mb-6">
-              <div className="px-4 py-5 sm:p-6">
+            <div className="enterprise-card border-amber-600/30 mb-6">
+              <div className="p-4">
                 <div className="flex">
                   <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="h-5 w-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
                   </div>
                   <div className="ml-3">
-                    <h3 className="text-sm font-medium text-yellow-800">
-                      Demo Mode - Database Not Connected
+                    <h3 className="text-sm font-medium text-amber-300">
+                      Demo Mode - Limited Functionality
                     </h3>
-                    <div className="mt-2 text-sm text-yellow-700">
+                    <div className="mt-2 text-sm text-slate-300">
                       <p>
-                        You&apos;re viewing a demo version. To enable full functionality with real data and AI features, 
-                        please set up Supabase and Gemini API using the <code className="bg-yellow-100 px-1 rounded">INTEGRATION_SETUP.md</code> guide.
+                        Running in demonstration mode. Configure Supabase and Gemini API for full functionality.
+                        <code className="bg-slate-800 px-1 rounded ml-1 text-amber-300">INTEGRATION_SETUP.md</code>
                       </p>
                     </div>
                   </div>
@@ -717,25 +694,10 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* Welcome Message */}
-          <div className="bg-white overflow-hidden shadow rounded-lg mb-6">
-            <div className="px-4 py-5 sm:p-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-2">
-                Welcome to Careline! 🎉
-              </h2>
-              <p className="text-gray-600">
-                {userData.role === 'patient' 
-                  ? 'Your AI-powered healthcare referral platform. Get specialist recommendations, upload records, and track your care journey.'
-                  : 'Review patient referrals with AI-generated summaries. Access structured medical records and streamlined patient data.'
-                }
-              </p>
-            </div>
-          </div>
-
           {/* Role-based Dashboard Content */}
           {userData.role === 'patient' ? <PatientDashboard /> : <DoctorDashboard />}
-        </div>
-      </main>
+        </main>
+      </div>
 
       {/* Modals */}
       <ReferralModal
@@ -754,7 +716,7 @@ export default function DashboardPage() {
         isOpen={showRecordsModal}
         onClose={() => setShowRecordsModal(false)}
         onSubmit={handleRecordsSubmit}
-        userRole={userData.role}
+        userRole={userData?.role || 'patient'}
       />
       
       {resultData && (

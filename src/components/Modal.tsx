@@ -60,17 +60,17 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = 'md
       {/* Modal Container */}
       <div className="flex min-h-full items-center justify-center p-4">
         <div 
-          className={`relative bg-white rounded-2xl shadow-2xl transform transition-all duration-300 ease-out ${maxWidthClasses[maxWidth]} w-full animate-in zoom-in-95 fade-in-0`}
+          className={`relative bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl transform transition-all duration-300 ease-out ${maxWidthClasses[maxWidth]} w-full animate-in zoom-in-95 fade-in-0`}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-100">
-            <h3 className="text-lg font-semibold text-gray-900">
+          <div className="flex items-center justify-between p-6 border-b border-slate-700">
+            <h3 className="text-lg font-semibold text-slate-100">
               {title}
             </h3>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors duration-200 hover:rotate-90 transform"
+              className="text-slate-400 hover:text-slate-200 transition-colors duration-200 hover:rotate-90 transform"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
