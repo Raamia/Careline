@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@auth0/nextjs-auth0';
-import { serverDecisionCardService } from '../../lib/database';
+import { serverDecisionCardService } from '../../../lib/database';
 
 export async function GET(request: NextRequest) {
   try {
