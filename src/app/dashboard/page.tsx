@@ -5,6 +5,7 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import { useCareline } from '@/hooks/useCareline';
+import { useGeolocation } from '@/hooks/useGeolocation';
 import ReferralModal from '@/components/ReferralModal';
 import CostExplainerModal from '@/components/CostExplainerModal';
 import RecordsSummarizerModal from '@/components/RecordsSummarizerModal';
@@ -61,6 +62,13 @@ export default function DashboardPage() {
     summarizeRecords, 
     generateReferral
   } = useCareline();
+  
+  const { 
+    location, 
+    loading: locationLoading, 
+    error: locationError, 
+    getLocation 
+  } = useGeolocation();
 
   const initializeUser = useCallback(async () => {
     try {
@@ -153,7 +161,30 @@ export default function DashboardPage() {
 
     try {
       setIsLoadingSpecialists(true);
-      const result = await findSpecialists(referral.specialty, '32304', 'Blue Cross');
+      
+      // Get user's location first
+      let userLocation = location;
+      if (!userLocation) {
+        console.log('Getting user location...');
+        userLocation = await getLocation();
+      }
+      
+      // Determine location string for search
+      let locationStr = '32304'; // Fallback ZIP code
+      if (userLocation) {
+        if (userLocation.zipCode) {
+          locationStr = userLocation.zipCode;
+        } else if (userLocation.city && userLocation.state) {
+          locationStr = `${userLocation.city}, ${userLocation.state}`;
+        } else {
+          locationStr = `${userLocation.latitude}, ${userLocation.longitude}`;
+        }
+        console.log('Using location:', locationStr);
+      } else {
+        console.warn('Unable to get user location, using default ZIP code');
+      }
+      
+      const result = await findSpecialists(referral.specialty, locationStr, 'Blue Cross');
       if (result) {
         setResultData({
           title: `Specialists for ${referral.specialty}`,
@@ -747,7 +778,10 @@ export default function DashboardPage() {
                <LoadingModal
                  isOpen={isLoadingSpecialists}
                  title="Finding Specialists"
-                 message="Our AI is searching for qualified healthcare providers in your area. This may take a few moments..."
+                 message={locationLoading 
+                   ? "Getting your location to find nearby specialists..."
+                   : "Our AI is searching for qualified healthcare providers in your area. This may take a few moments..."
+                 }
                />
                
                <LoadingModal

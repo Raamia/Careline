@@ -64,53 +64,108 @@ export default function ResultModal({ isOpen, onClose, title, type, data }: Resu
     
     if (!specialistsData?.specialists?.length) {
       return (
-        <div className="text-center py-8">
-          <div className="text-gray-400 mb-2">
-            <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        <div className="text-center py-12">
+          <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           </div>
-          <p className="text-gray-500">No specialists found. Try a different specialty or location.</p>
+          <p className="text-slate-400">No specialists found in your area. Try adjusting your search criteria.</p>
         </div>
       );
     }
 
     return (
       <div className="space-y-4">
-        <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
-          <p className="text-sm text-purple-700">
-            Found <strong>{specialistsData.specialists.length}</strong> specialists in your area. Contact information and scheduling details below.
-          </p>
+        <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 mb-6">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+              <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm font-medium text-blue-200">
+                Found <strong>{specialistsData.specialists.length}</strong> specialists in your area
+              </p>
+              <p className="text-xs text-blue-300/70">Contact information and scheduling details below</p>
+            </div>
+          </div>
         </div>
         
         {specialistsData.specialists.map((specialist: Specialist, index: number) => (
-          <div key={index} className="border border-gray-200 rounded-lg p-4 hover:border-purple-300 transition-colors duration-200">
+          <div key={index} className="enterprise-card border-slate-600 hover:border-blue-500 p-5">
             <div className="flex justify-between items-start">
               <div className="flex-1">
-                <h4 className="font-semibold text-gray-900">{specialist.name}</h4>
-                <p className="text-gray-600 mt-1">{specialist.practice}</p>
-                {specialist.address && (
-                  <p className="text-sm text-gray-500 mt-1">{specialist.address}</p>
-                )}
-                {specialist.phone && (
-                  <p className="text-sm text-blue-600 mt-1">{specialist.phone}</p>
-                )}
-                {specialist.notes && (
-                  <p className="text-sm text-gray-600 mt-2 italic">{specialist.notes}</p>
-                )}
-              </div>
-              <div className="ml-4 flex flex-col items-end space-y-2">
-                {specialist.inNetwork && (
-                  <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">
-                    In Network
-                  </span>
-                )}
-                {specialist.rating && (
-                  <div className="flex items-center space-x-1">
-                    <span className="text-yellow-400">★</span>
-                    <span className="text-sm text-gray-600">{specialist.rating}</span>
+                <div className="flex items-start justify-between mb-3">
+                  <div>
+                    <h4 className="font-semibold text-slate-100 text-lg">{specialist.name}</h4>
+                    <p className="text-slate-300 font-medium">{specialist.practice}</p>
                   </div>
-                )}
+                  <div className="flex flex-col items-end space-y-2">
+                    {specialist.inNetwork && (
+                      <span className="status-badge active text-xs">
+                        In Network
+                      </span>
+                    )}
+                    {specialist.rating && (
+                      <div className="flex items-center space-x-1">
+                        <svg className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <span className="text-sm text-slate-300 font-medium">{specialist.rating}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  {specialist.address && (
+                    <div className="flex items-start space-x-2">
+                      <svg className="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <p className="text-sm text-slate-400">{specialist.address}</p>
+                    </div>
+                  )}
+                  
+                  {specialist.phone && (
+                    <div className="flex items-center space-x-2">
+                      <svg className="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                      </svg>
+                      <a href={`tel:${specialist.phone}`} className="text-sm text-blue-400 hover:text-blue-300 transition-colors">
+                        {specialist.phone}
+                      </a>
+                    </div>
+                  )}
+                  
+                  {specialist.notes && (
+                    <div className="mt-3 p-3 bg-slate-800/50 rounded-lg border border-slate-700">
+                      <p className="text-sm text-slate-300 italic">{specialist.notes}</p>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="flex space-x-3 mt-4">
+                  <button 
+                    onClick={() => handleCopy(`${specialist.name}\n${specialist.practice}\n${specialist.address}\n${specialist.phone}`)}
+                    className="enterprise-button secondary text-xs px-3 py-1.5"
+                  >
+                    Copy Info
+                  </button>
+                  {specialist.phone && (
+                    <a 
+                      href={`tel:${specialist.phone}`}
+                      className="enterprise-button text-xs px-3 py-1.5"
+                    >
+                      Call Now
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
           </div>

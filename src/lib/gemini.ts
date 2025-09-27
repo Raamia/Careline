@@ -15,31 +15,52 @@ export const geminiFlash = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' 
 // Directory Agent - Find specialists
 export async function findSpecialists(
   specialty: string,
-  zipCode: string,
+  location: string,
   insuranceType: string
 ) {
+  // Determine if location is coordinates, ZIP code, or city/state
+  const isCoordinates = location.includes(',') && location.includes('.');
+  const isZipCode = /^\d{5}(-\d{4})?$/.test(location);
+  
+  let locationDescription = '';
+  if (isCoordinates) {
+    locationDescription = `coordinates ${location}`;
+  } else if (isZipCode) {
+    locationDescription = `ZIP code ${location}`;
+  } else {
+    locationDescription = `the ${location} area`;
+  }
+
   const prompt = `
-    Act as a healthcare directory agent. Find specialists near ZIP code ${zipCode}.
+    Act as a healthcare directory agent. Find specialists near ${locationDescription}.
     
     Specialty needed: ${specialty}
     Insurance: ${insuranceType}
+    Location: ${location}
     
-    Provide 3-5 recommendations in this JSON format:
+    Provide 3-5 realistic recommendations in this JSON format:
     {
       "specialists": [
         {
           "name": "Dr. Full Name",
           "practice": "Practice Name",
-          "address": "Full Address",
+          "address": "Full Street Address, City, State ZIP",
           "phone": "(555) 123-4567",
           "inNetwork": true,
           "rating": 4.8,
-          "notes": "Brief note about specialties or expertise"
+          "notes": "Brief note about specialties, subspecialties, or what makes them stand out"
         }
       ]
     }
     
-    Make the recommendations realistic for the ${zipCode} area.
+    Important guidelines:
+    - Use realistic doctor names and practice names for the area
+    - Include complete addresses with real street names, city, state, and ZIP codes
+    - Make phone numbers follow (XXX) XXX-XXXX format
+    - Set inNetwork to true for most specialists (80% should be in-network)
+    - Use ratings between 4.2 and 4.9
+    - Include helpful notes about their expertise or patient care approach
+    - Ensure all information feels authentic for ${locationDescription}
   `
 
   try {
