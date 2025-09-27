@@ -1,8 +1,12 @@
 'use client';
 
+import { useUser } from '@auth0/nextjs-auth0';
+
 export default function Hero() {
+  const { user } = useUser();
+
   return (
-    <main className="relative">
+    <main className="relative min-h-screen flex flex-col">
       {/* Powered by Gemini AI badge */}
       <div className="flex justify-center pt-8">
         <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-50 text-red-600 border border-red-200">
@@ -12,8 +16,8 @@ export default function Hero() {
       </div>
 
       {/* Hero Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20">
-        <div className="text-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1 flex items-center">
+        <div className="text-center w-full">
           {/* Main Headline */}
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
             AI-Powered Healthcare{' '}
@@ -32,8 +36,11 @@ export default function Hero() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="bg-red-600 hover:bg-red-700 text-white font-medium px-8 py-3 rounded-md transition-colors flex items-center group">
-              Start Free Trial
+            <a
+              href={user ? "/dashboard" : "/signup"}
+              className="bg-red-600 hover:bg-red-700 text-white font-medium px-8 py-3 rounded-md transition-colors flex items-center group"
+            >
+              {user ? "Go to Dashboard" : "Get Started"}
               <svg
                 className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform"
                 fill="none"
@@ -47,7 +54,7 @@ export default function Hero() {
                   d="M9 5l7 7-7 7"
                 />
               </svg>
-            </button>
+            </a>
             <button className="text-gray-700 hover:text-gray-900 font-medium px-8 py-3 rounded-md transition-colors border border-gray-300 hover:border-gray-400">
               Watch Demo
             </button>
