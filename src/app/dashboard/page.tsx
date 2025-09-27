@@ -153,6 +153,21 @@ export default function DashboardPage() {
       setShowReferralModal(false); // Close the input modal
       console.log('Creating referral with data:', data);
       
+      // Test if API routes are working at all
+      console.log('🧪 Testing API routes...');
+      try {
+        const testResponse = await fetch('/api/test-referrals', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ test: 'data' })
+        });
+        console.log('🧪 Test API response status:', testResponse.status);
+        const testData = await testResponse.json();
+        console.log('🧪 Test API response:', testData);
+      } catch (testError) {
+        console.log('🧪 Test API failed:', testError);
+      }
+      
       const newReferral = await createReferral({
         specialty: data.specialty,
         chief_complaint: data.complaint,

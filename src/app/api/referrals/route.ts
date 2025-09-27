@@ -59,27 +59,41 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  console.log('🚀 POST /api/referrals called')
+  
   try {
+    console.log('🔐 Getting Auth0 session...')
     const session = await getSession()
+    console.log('👤 Session:', session ? 'Found' : 'Not found')
+    
     if (!session?.user) {
+      console.log('❌ No user in session')
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    console.log('📥 Parsing request body...')
     const body = await request.json()
     const { specialty, chief_complaint, priority = 'routine' } = body
+    console.log('📋 Referral data:', { specialty, chief_complaint, priority })
 
     // Get user from database
-    const { data: user } = await supabase
+    console.log('🔍 Looking up user with Auth0 ID:', session.user.sub)
+    const { data: user, error: userError } = await supabase
       .from('users')
       .select('*')
       .eq('auth0_id', session.user.sub)
       .single()
 
+    console.log('👤 User lookup result:', user ? 'Found' : 'Not found')
+    if (userError) console.log('❌ User lookup error:', userError)
+
     if (!user) {
+      console.log('❌ User not found in database')
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
     // Create new referral
+    console.log('💾 Creating referral for user:', user.id)
     const { data: referral, error } = await supabase
       .from('referrals')
       .insert({
@@ -92,11 +106,15 @@ export async function POST(request: NextRequest) {
       .select()
       .single()
 
-    if (error) throw error
+    if (error) {
+      console.log('❌ Referral creation error:', error)
+      throw error
+    }
 
+    console.log('✅ Referral created successfully:', referral)
     return NextResponse.json({ referral }, { status: 201 })
   } catch (error) {
-    console.error('Error creating referral:', error)
+    console.error('🚨 Error creating referral:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

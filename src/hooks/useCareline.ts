@@ -70,19 +70,29 @@ export function useCareline() {
       setLoading(true)
       setError(null)
 
+      console.log('🔗 Making POST request to /api/referrals')
+      console.log('📤 Request data:', referralData)
+      
       const response = await fetch('/api/referrals', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(referralData)
       })
 
+      console.log('📥 Response status:', response.status)
+      console.log('📥 Response headers:', Object.fromEntries(response.headers.entries()))
+
       if (!response.ok) {
-        throw new Error('Failed to create referral')
+        const errorText = await response.text()
+        console.log('❌ Response error text:', errorText)
+        throw new Error(`Failed to create referral: ${response.status} ${response.statusText}`)
       }
 
       const data = await response.json()
+      console.log('✅ Response data:', data)
       return data.referral
     } catch (err) {
+      console.log('🚨 createReferral error:', err)
       setError(err instanceof Error ? err.message : 'Unknown error')
       return null
     } finally {
