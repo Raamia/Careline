@@ -103,9 +103,9 @@ export default function SignupPage() {
                 
                 <button
                   type="button"
-                  onClick={() => setSelectedRole('provider')}
+                  onClick={() => setSelectedRole('doctor')}
                   className={`relative rounded-lg border-2 p-4 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors ${
-                    selectedRole === 'provider'
+                    selectedRole === 'doctor'
                       ? 'border-red-600 bg-red-50 hover:bg-red-100'
                       : 'border-gray-300 bg-white hover:border-gray-400 hover:bg-gray-50'
                   }`}
@@ -113,11 +113,11 @@ export default function SignupPage() {
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
                       <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
-                        selectedRole === 'provider'
+                        selectedRole === 'doctor'
                           ? 'bg-red-600'
                           : 'border-2 border-gray-300'
                       }`}>
-                        {selectedRole === 'provider' && (
+                        {selectedRole === 'doctor' && (
                           <div className="w-2 h-2 bg-white rounded-full"></div>
                         )}
                       </div>

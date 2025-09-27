@@ -238,6 +238,43 @@ export function useCareline() {
     }
   }
 
+  // Update user role
+  const updateUserRole = async (role: 'patient' | 'doctor') => {
+    if (!user) return null
+
+    try {
+      setLoading(true)
+      setError(null)
+
+      console.log('🔗 Making POST request to /api/users/update-role')
+      console.log('📤 Role update data:', { role })
+
+      const response = await fetch('/api/users/update-role', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role })
+      })
+
+      console.log('📥 Role update response status:', response.status)
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.log('❌ Role update response error text:', errorText)
+        throw new Error(`Failed to update user role: ${response.status} ${response.statusText} - ${errorText}`)
+      }
+
+      const data = await response.json()
+      console.log('✅ Role update response data:', data)
+      return data.user
+    } catch (err) {
+      console.log('🚨 updateUserRole error:', err)
+      setError(err instanceof Error ? err.message : 'Unknown error')
+      return null
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return {
     loading,
     error,
@@ -247,6 +284,7 @@ export function useCareline() {
     findSpecialists,
     explainCosts,
     summarizeRecords,
-    generateReferral
+    generateReferral,
+    updateUserRole
   }
 }
