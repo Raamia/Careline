@@ -249,24 +249,18 @@ export async function generateReferral(
   const prompt = `
     Act as a medical referral AI assistant.
     
-    Generate a professional referral packet:
-    
+    Generate a concise referral summary for:
     Patient: ${patientInfo.name}, Age ${patientInfo.age}
     Chief Complaint: ${chiefComplaint}
     Specialty: ${specialty}
     Urgency: ${urgency}
     
-    Provide referral in this JSON format:
+    Provide response in this JSON format:
     {
-      "referralLetter": "Professional referral letter for receiving doctor",
-      "patientInstructions": "Clear instructions for the patient",
-      "requiredDocuments": ["Document 1", "Document 2"],
-      "preparationSteps": ["Step 1", "Step 2"],
-      "estimatedTimeframe": "2-3 weeks",
-      "urgencyNotes": "Any special notes about urgency"
+      "summary": "A professional 3-4 sentence summary that includes the referral purpose, expected timeline, and priority level. Make it clear and informative for both patient and healthcare provider."
     }
     
-    Make it professional for doctors but also include patient-friendly instructions.
+    Keep it concise, professional, and include timeline and priority information naturally within the sentences.
   `
 
   try {

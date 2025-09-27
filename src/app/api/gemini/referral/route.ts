@@ -28,14 +28,7 @@ export async function POST(request: NextRequest) {
       await supabase
         .from('referrals')
         .update({
-          gemini_summary: result.referralLetter,
-          patient_notes: result.patientInstructions,
-          metadata: {
-            requiredDocuments: result.requiredDocuments,
-            preparationSteps: result.preparationSteps,
-            estimatedTimeframe: result.estimatedTimeframe,
-            urgencyNotes: result.urgencyNotes
-          }
+          gemini_summary: result.summary
         })
         .eq('id', referralId)
     }

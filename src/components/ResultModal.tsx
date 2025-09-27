@@ -35,10 +35,7 @@ interface SummaryData {
 }
 
 interface ReferralData {
-  patientInstructions?: string;
-  estimatedTimeframe?: string;
-  urgencyNotes?: string;
-  requiredDocuments?: string[];
+  summary?: string;
 }
 
 interface ResultModalProps {
@@ -245,47 +242,11 @@ export default function ResultModal({ isOpen, onClose, title, type, data }: Resu
     
     return (
       <div className="space-y-4">
-        <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
-          <h4 className="font-semibold text-indigo-900 mb-2">Referral Generated</h4>
-          <p className="text-indigo-800 text-sm">Your referral packet has been created and is ready for your healthcare provider.</p>
-        </div>
-        
-        {referralData.patientInstructions && (
-          <div>
-            <h4 className="font-semibold text-gray-900 mb-2">Patient Instructions</h4>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <p className="text-gray-700 leading-relaxed">{referralData.patientInstructions}</p>
-            </div>
-          </div>
-        )}
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {referralData.estimatedTimeframe && (
-            <div className="bg-blue-50 rounded-lg p-3">
-              <h5 className="font-medium text-blue-900 mb-1">Timeline</h5>
-              <p className="text-blue-800 text-sm">{referralData.estimatedTimeframe}</p>
-            </div>
-          )}
-          
-          {referralData.urgencyNotes && (
-            <div className="bg-yellow-50 rounded-lg p-3">
-              <h5 className="font-medium text-yellow-900 mb-1">Priority</h5>
-              <p className="text-yellow-800 text-sm">{referralData.urgencyNotes}</p>
-            </div>
-          )}
-        </div>
-        
-        {referralData.requiredDocuments && referralData.requiredDocuments.length > 0 && (
-          <div>
-            <h4 className="font-semibold text-gray-900 mb-2">Required Documents</h4>
-            <ul className="space-y-1">
-              {referralData.requiredDocuments.map((doc: string, index: number) => (
-                <li key={index} className="flex items-center">
-                  <span className="text-indigo-500 mr-2">•</span>
-                  <span className="text-gray-700">{doc}</span>
-                </li>
-              ))}
-            </ul>
+        {referralData.summary && (
+          <div className="enterprise-card p-6">
+            <p className="text-gray-300 leading-relaxed text-lg">
+              {referralData.summary}
+            </p>
           </div>
         )}
       </div>
