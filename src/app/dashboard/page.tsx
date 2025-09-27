@@ -151,7 +151,8 @@ export default function DashboardPage() {
     if (userData.id.startsWith('auth0|')) {
       console.log('🔄 User needs to be synced to database first');
       try {
-        const syncedUser = await syncUser('patient');
+        // Don't force role - let sync process determine correct role
+        const syncedUser = await syncUser();
         if (syncedUser) {
           setUserData(syncedUser);
           console.log('✅ User synced successfully:', syncedUser);
