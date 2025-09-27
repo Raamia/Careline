@@ -34,13 +34,6 @@ export default function Hero() {
 
   return (
     <main className="relative min-h-screen flex flex-col">
-      {/* Powered by Gemini AI badge */}
-      <div className="flex justify-center pt-8">
-        <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-50 text-red-600 border border-red-200">
-          <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-          Powered by Gemini AI
-        </div>
-      </div>
 
       {/* Hero Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex-1 flex items-center">
@@ -82,9 +75,6 @@ export default function Hero() {
                 />
               </svg>
             </a>
-            <button className="text-gray-700 hover:text-gray-900 font-medium px-8 py-3 rounded-md transition-colors border border-gray-300 hover:border-gray-400">
-              Watch Demo
-            </button>
           </div>
         </div>
       </div>
