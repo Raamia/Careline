@@ -16,6 +16,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Careline - AI-Powered Healthcare Referrals",
   description: "Replace outdated phone calls and faxes with intelligent referral management. Connect patients with the right specialists instantly.",
+  icons: {
+    icon: '/newred.png',
+  },
 };
 
 export default function RootLayout({
