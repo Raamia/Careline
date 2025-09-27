@@ -29,8 +29,11 @@ interface SummaryData {
   patientSummary?: string;
   keyFindings?: string[];
   keyPoints?: string[];
+  bulletPoints?: string[];
   recommendations?: string[];
   nextSteps?: string[];
+  immediateActions?: string[];
+  questionsForDoctor?: string[];
   redFlags?: string[];
 }
 
@@ -182,14 +185,103 @@ export default function ResultModal({ isOpen, onClose, title, type, data }: Resu
 
   const renderSummary = () => {
     const summaryData = data as SummaryData;
-    const summary = summaryData.clinicalSummary || summaryData.patientSummary;
+    const isPatientSummary = summaryData.patientSummary && summaryData.bulletPoints;
+    
+    if (isPatientSummary) {
+      // Enhanced Patient Summary with 15-20 bullet points
+      return (
+        <div className="space-y-6">
+          {/* Overview */}
+          <div className="enterprise-card border-slate-600 p-6">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+                <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h4 className="text-lg font-semibold text-slate-100">Document Summary</h4>
+            </div>
+            <p className="text-slate-300 leading-relaxed">{summaryData.patientSummary}</p>
+          </div>
+
+          {/* Comprehensive Bullet Points */}
+          <div className="enterprise-card border-slate-600 p-6">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                </svg>
+              </div>
+              <h4 className="text-lg font-semibold text-slate-100">Detailed Explanation</h4>
+            </div>
+            <div className="grid gap-3">
+              {summaryData.bulletPoints?.map((point, index) => (
+                <div key={index} className="flex items-start space-x-3 p-3 bg-slate-800/50 rounded-lg">
+                  <div className="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-blue-400 text-xs font-medium">{index + 1}</span>
+                  </div>
+                  <p className="text-slate-200 leading-relaxed">{point}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Immediate Actions */}
+          {summaryData.immediateActions && summaryData.immediateActions.length > 0 && (
+            <div className="enterprise-card border-amber-500/30 bg-amber-500/5 p-6">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-8 h-8 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                  <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                </div>
+                <h4 className="text-lg font-semibold text-amber-200">Action Items</h4>
+              </div>
+              <div className="space-y-2">
+                {summaryData.immediateActions.map((action, index) => (
+                  <div key={index} className="flex items-start space-x-3">
+                    <span className="text-amber-400 font-medium flex-shrink-0">→</span>
+                    <p className="text-amber-200 font-medium">{action}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Questions for Doctor */}
+          {summaryData.questionsForDoctor && summaryData.questionsForDoctor.length > 0 && (
+            <div className="enterprise-card border-purple-500/30 bg-purple-500/5 p-6">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                  <svg className="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h4 className="text-lg font-semibold text-purple-200">Questions for Your Doctor</h4>
+              </div>
+              <div className="space-y-2">
+                {summaryData.questionsForDoctor.map((question, index) => (
+                  <div key={index} className="flex items-start space-x-3">
+                    <span className="text-purple-400 font-medium flex-shrink-0">?</span>
+                    <p className="text-purple-200">{question}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // Clinical Summary (for doctors) - keep original format
+    const summary = summaryData.clinicalSummary;
     const points = summaryData.keyFindings || summaryData.keyPoints || [];
     const recommendations = summaryData.recommendations || summaryData.nextSteps || [];
     
     return (
       <div className="space-y-4">
         <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <h4 className="font-semibold text-green-900 mb-2">AI Summary</h4>
+          <h4 className="font-semibold text-green-900 mb-2">Clinical Summary</h4>
           <p className="text-green-800 leading-relaxed">{summary}</p>
         </div>
         

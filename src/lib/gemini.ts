@@ -187,17 +187,31 @@ export async function summarizeRecords(
     : `
         Act as a patient-friendly medical AI assistant.
         
-        Analyze this medical document PDF and explain it in simple terms.
+        Analyze this medical document PDF and explain it in simple, clear terms that any patient can understand.
         
-        Provide summary in this JSON format:
+        Provide a comprehensive summary in this JSON format:
         {
-          "patientSummary": "Easy to understand explanation for patients",
-          "keyPoints": ["Key point 1", "Key point 2", "Key point 3"],
-          "nextSteps": ["What to do next", "Follow-up recommendations"],
-          "questions": ["Suggested questions to ask your doctor"]
+          "patientSummary": "A brief 2-3 sentence overview of what this document contains",
+          "bulletPoints": [
+            "15-20 comprehensive bullet points that explain:",
+            "• What each test result means in simple terms",
+            "• Whether results are normal, high, or low and what that means",
+            "• Any symptoms or conditions mentioned",
+            "• Treatment plans or medications discussed",
+            "• Follow-up appointments or next steps",
+            "• Important things to watch for",
+            "• Questions to ask your doctor",
+            "• Lifestyle recommendations if any",
+            "• When to seek immediate care if mentioned",
+            "• Insurance or cost information if present",
+            "Make each point clear, actionable, and easy to understand"
+          ],
+          "immediateActions": ["Any urgent actions needed", "Important follow-ups"],
+          "questionsForDoctor": ["Key questions to ask your healthcare provider"]
         }
         
-        Use simple, non-medical language that patients can understand.
+        Use simple, everyday language. Avoid medical jargon. Explain what abnormal results mean for the patient's health and daily life.
+        Make sure to provide exactly 15-20 detailed bullet points that thoroughly explain the document.
       `
 
   try {
