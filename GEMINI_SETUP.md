@@ -47,14 +47,14 @@ Look for these messages in your server console:
 - Check your usage at [Google Cloud Console](https://console.cloud.google.com/)
 
 ### ❌ **"Model not found"**
-- The code has been updated to use `gemini-1.5-pro` and `gemini-1.5-flash`
+- The code has been updated to use correct model names: `gemini-pro` and `gemini-pro-vision`
 - Make sure you're using the latest version
 
 ## 5. Model Updates
 
 The integration now uses:
-- **`gemini-1.5-flash`**: For quick responses (specialists, costs)
-- **`gemini-1.5-pro`**: For complex tasks (document analysis, referrals)
+- **`gemini-pro`**: For all text generation tasks (specialists, costs, document analysis, referrals)
+- **`gemini-pro-vision`**: For image/document analysis with visual content
 
 ## 6. Debugging Features
 
