@@ -248,7 +248,8 @@ export class RecordsAgent {
 
     } catch (error) {
       console.error('Records Agent: Error parsing records', error);
-      await serverAgentTaskService.updateTaskStatus(taskId, 'failed', undefined, error.message);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      await serverAgentTaskService.updateTaskStatus(taskId, 'failed', undefined, errorMessage);
       throw error;
     }
   }

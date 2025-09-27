@@ -108,7 +108,8 @@ export class CostAgent {
 
     } catch (error) {
       console.error('Cost Agent: Error estimating costs', error);
-      await serverAgentTaskService.updateTaskStatus(taskId, 'failed', undefined, error.message);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      await serverAgentTaskService.updateTaskStatus(taskId, 'failed', undefined, errorMessage);
       throw error;
     }
   }
@@ -118,7 +119,7 @@ export class CostAgent {
     input: CostAgentInput
   ): Promise<CostEstimate> {
     // Get base costs for this specialty
-    const specialtyCosts = procedureCosts[provider.specialty] || procedureCosts['Cardiology'];
+    const specialtyCosts = (procedureCosts as any)[provider.specialty] || procedureCosts['Cardiology'];
     const consultationCost = specialtyCosts['new_patient_consultation'];
 
     // Mock insurance calculation - in real life, this would call insurance APIs
@@ -128,7 +129,7 @@ export class CostAgent {
       memberId: 'mock'
     };
 
-    const networkInfo = insuranceNetworks[insuranceInfo.provider]?.[insuranceInfo.planType];
+    const networkInfo = (insuranceNetworks as any)[insuranceInfo.provider]?.[insuranceInfo.planType];
     
     let estimateLow = consultationCost.range[0];
     let estimateHigh = consultationCost.range[1];
@@ -197,7 +198,7 @@ export class CostAgent {
     // Simulate insurance verification API call
     await new Promise(resolve => setTimeout(resolve, 3000));
 
-    const networkInfo = insuranceNetworks[insuranceInfo.provider]?.[insuranceInfo.planType];
+    const networkInfo = (insuranceNetworks as any)[insuranceInfo.provider]?.[insuranceInfo.planType];
     
     if (!networkInfo) {
       return {
@@ -223,7 +224,7 @@ export class CostAgent {
     specialty: string, 
     procedureType: string
   ): Promise<{ base: number; range: [number, number] } | null> {
-    const specialtyCosts = procedureCosts[specialty];
+    const specialtyCosts = (procedureCosts as any)[specialty];
     if (!specialtyCosts) return null;
     
     return specialtyCosts[procedureType] || null;
@@ -237,8 +238,8 @@ export class CostAgent {
     console.log('Cost Agent: Updating pricing', { specialty, procedureType, newCosts });
     
     // In a real system, this would update the pricing database
-    if (procedureCosts[specialty]) {
-      procedureCosts[specialty][procedureType] = newCosts;
+    if ((procedureCosts as any)[specialty]) {
+      (procedureCosts as any)[specialty][procedureType] = newCosts;
     }
   }
 

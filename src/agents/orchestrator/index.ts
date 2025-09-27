@@ -109,7 +109,8 @@ export class OrchestratorAgent {
 
     } catch (error) {
       console.error('Orchestrator: Error processing referral', error);
-      await serverAgentTaskService.updateTaskStatus(taskId, 'failed', undefined, error.message);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      await serverAgentTaskService.updateTaskStatus(taskId, 'failed', undefined, errorMessage);
       throw error;
     }
   }

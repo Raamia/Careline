@@ -168,7 +168,8 @@ export class DirectoryAgent {
 
     } catch (error) {
       console.error('Directory Agent: Error finding providers', error);
-      await serverAgentTaskService.updateTaskStatus(taskId, 'failed', undefined, error.message);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      await serverAgentTaskService.updateTaskStatus(taskId, 'failed', undefined, errorMessage);
       throw error;
     }
   }
