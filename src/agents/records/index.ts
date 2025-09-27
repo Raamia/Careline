@@ -212,7 +212,7 @@ export class RecordsAgent {
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       // Get mock data for this patient
-      const mockData = mockMedicalRecords[input.patientId];
+      const mockData = (mockMedicalRecords as any)[input.patientId];
       
       if (!mockData) {
         throw new Error(`No medical records found for patient ${input.patientId}`);
@@ -349,7 +349,7 @@ export class RecordsAgent {
       }
     }
 
-    return [...new Set(medications)]; // Remove duplicates
+    return Array.from(new Set(medications)); // Remove duplicates
   }
 
   private extractConditionsFromText(text: string): string[] {
@@ -385,7 +385,7 @@ export class RecordsAgent {
       }
     }
 
-    return [...new Set(allergies)];
+    return Array.from(new Set(allergies));
   }
 
   private extractProceduresFromText(text: string): string[] {
