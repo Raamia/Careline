@@ -196,15 +196,13 @@ export default function DashboardPage() {
           console.warn('Failed to refresh referrals list:', refreshError);
         }
         
-        // Show success feedback
-        alert(`✅ Referral created successfully!\n\nSpecialty: ${newReferral.specialty}\nPriority: ${newReferral.priority}\nStatus: ${newReferral.status}`);
+        // Success - referral is automatically added to the list above
+        console.log('✅ Referral created successfully:', newReferral);
       } else {
         console.error('No referral returned from API');
-        alert('❌ Failed to create referral. Please try again.');
       }
     } catch (error) {
       console.error('Error creating referral:', error);
-      alert('❌ Error creating referral. Please check your connection and try again.');
     }
   };
 
