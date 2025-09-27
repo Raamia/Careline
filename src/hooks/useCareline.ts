@@ -15,19 +15,29 @@ export function useCareline() {
       setLoading(true)
       setError(null)
 
+      console.log('🔗 Making POST request to /api/users/sync')
+      console.log('📤 Sync request data:', { role })
+
       const response = await fetch('/api/users/sync', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ role })
       })
 
+      console.log('📥 Sync response status:', response.status)
+      console.log('📥 Sync response headers:', Object.fromEntries(response.headers.entries()))
+
       if (!response.ok) {
-        throw new Error('Failed to sync user')
+        const errorText = await response.text()
+        console.log('❌ Sync response error text:', errorText)
+        throw new Error(`Failed to sync user: ${response.status} ${response.statusText} - ${errorText}`)
       }
 
       const data = await response.json()
+      console.log('✅ Sync response data:', data)
       return data.user
     } catch (err) {
+      console.log('🚨 syncUser error:', err)
       setError(err instanceof Error ? err.message : 'Unknown error')
       return null
     } finally {
