@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useUser } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -35,9 +36,11 @@ export default function LoginPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Logo */}
         <div className="flex justify-center">
-          <img
+          <Image
             src="/croppedcarline.png"
             alt="Careline"
+            width={256}
+            height={98}
             className="h-16 w-auto"
           />
         </div>
@@ -58,6 +61,7 @@ export default function LoginPage() {
           <div className="space-y-6">
             {/* Auth0 Login Button */}
             <div>
+              {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
               <a
                 href="/api/auth/login"
                 className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
@@ -78,6 +82,7 @@ export default function LoginPage() {
 
             {/* Social Login Options */}
             <div className="flex justify-center">
+              {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
               <a
                 href="/api/auth/login?connection=google-oauth2"
                 className="w-full max-w-xs inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors"

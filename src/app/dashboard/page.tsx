@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useUser } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -36,9 +37,11 @@ export default function DashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center">
-              <img
+              <Image
                 src="/croppedcarline.png"
                 alt="Careline"
+                width={256}
+                height={98}
                 className="h-12 w-auto mr-3"
               />
               <h1 className="text-xl font-semibold text-gray-900">Dashboard</h1>
@@ -46,6 +49,7 @@ export default function DashboardPage() {
             
             <div className="flex items-center space-x-4">
               <span className="text-gray-700">Hello, {user.name}</span>
+              {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
               <a
                 href="/api/auth/logout"
                 className="text-gray-500 hover:text-gray-700 font-medium transition-colors"

@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useUser } from '@auth0/nextjs-auth0';
 
 export default function Header() {
@@ -11,9 +12,11 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <img
+            <Image
               src="/croppedcarline.png"
               alt="Careline"
+              width={256}
+              height={98}
               className="h-12 w-auto"
             />
           </div>
@@ -57,6 +60,7 @@ export default function Header() {
                 <span className="text-gray-600">
                   Hello, {user.name}
                 </span>
+                    {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                     <a
                       href="/api/auth/logout"
                       className="text-gray-600 hover:text-gray-900 font-medium transition-colors"

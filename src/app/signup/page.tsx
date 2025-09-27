@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useUser } from '@auth0/nextjs-auth0';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -36,9 +37,11 @@ export default function SignupPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Logo */}
         <div className="flex justify-center">
-          <img
+          <Image
             src="/croppedcarline.png"
             alt="Careline"
+            width={256}
+            height={98}
             className="h-16 w-auto"
           />
         </div>
@@ -134,6 +137,7 @@ export default function SignupPage() {
 
             {/* Auth0 Signup Button */}
             <div>
+              {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
               <a
                 href="/api/auth/login?screen_hint=signup"
                 className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
@@ -154,6 +158,7 @@ export default function SignupPage() {
 
             {/* Social Signup Options */}
             <div className="flex justify-center">
+              {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
               <a
                 href="/api/auth/login?connection=google-oauth2&screen_hint=signup"
                 className="w-full max-w-xs inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors"
@@ -172,7 +177,7 @@ export default function SignupPage() {
           {/* Benefits */}
           <div className="mt-6 border-t border-gray-200 pt-6">
             <h3 className="text-sm font-medium text-gray-900 mb-3">
-              What you'll get:
+              What you&apos;ll get:
             </h3>
             <ul className="text-sm text-gray-600 space-y-2">
               <li className="flex items-center">
