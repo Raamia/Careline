@@ -82,13 +82,21 @@ export default function DashboardPage() {
       
       // If we can get referrals, the user exists in database
       if (Array.isArray(userReferrals)) {
-        // User exists, create real user object
-        setUserData({
-          id: user?.sub || 'authenticated-user',
-          role: 'patient', // Can be updated from database later
-          name: user?.name || 'Patient',
-          email: user?.email || 'patient@example.com'
-        });
+        // User exists - now get their actual role from database
+        console.log('Getting user role from database...');
+        const actualUser = await syncUser(); // This will get the real user data
+        if (actualUser) {
+          setUserData(actualUser);
+          console.log('User initialized with database role:', actualUser.role);
+        } else {
+          // Fallback if sync fails
+          setUserData({
+            id: user?.sub || 'authenticated-user',
+            role: 'patient',
+            name: user?.name || 'Patient',
+            email: user?.email || 'patient@example.com'
+          });
+        }
         setReferrals(userReferrals);
         console.log('User initialized with real data');
       } else {
