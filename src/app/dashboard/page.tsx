@@ -73,17 +73,11 @@ export default function DashboardPage() {
   const initializeUser = useCallback(async () => {
     try {
       setLoadingData(true);
-      console.log('🚀 Initializing user...');
-      console.log('🔍 Auth0 user data:', {
-        sub: user?.sub,
-        email: user?.email,
-        name: user?.name,
-        emailVerified: user?.email_verified
-      });
+      console.log('Initializing user...');
       
       // Try to get user from database first
       const userReferrals = await getReferrals();
-      console.log('📊 Referrals response:', userReferrals);
+      console.log('Referrals response:', userReferrals);
       
       // If we can get referrals, the user exists in database
       if (Array.isArray(userReferrals)) {
@@ -98,10 +92,9 @@ export default function DashboardPage() {
         console.log('User initialized with real data');
       } else {
         // Try to sync user with database
-        console.log('🔄 User not found in database, syncing...');
-        console.log('📤 Calling syncUser for email:', user?.email);
+        console.log('Syncing user with database...');
         const syncedUser = await syncUser('patient');
-        console.log('📥 Sync result:', syncedUser);
+        console.log('Sync result:', syncedUser);
         
         if (syncedUser) {
           setUserData(syncedUser);
