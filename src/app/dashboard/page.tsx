@@ -131,7 +131,7 @@ export default function DashboardPage() {
     }
   }, [user, isLoading, router, userData, initializeUser]);
 
-  const handleCreateReferral = () => {
+  const handleCreateReferral = async () => {
     console.log('Create referral clicked, userData:', userData);
     
     if (userData?.id === 'demo-user') {
@@ -144,6 +144,25 @@ export default function DashboardPage() {
       return;
     }
     
+    // Check if user needs to be synced to database
+    if (userData.id.startsWith('auth0|')) {
+      console.log('🔄 User needs to be synced to database first');
+      try {
+        const syncedUser = await syncUser('patient');
+        if (syncedUser) {
+          setUserData(syncedUser);
+          console.log('✅ User synced successfully:', syncedUser);
+        } else {
+          alert('❌ Failed to sync user to database. Please try again.');
+          return;
+        }
+      } catch (error) {
+        console.error('❌ User sync error:', error);
+        alert('❌ Failed to sync user to database. Please check your connection.');
+        return;
+      }
+    }
+    
     console.log('Opening referral modal for user:', userData.id);
     setShowReferralModal(true);
   };
@@ -153,20 +172,6 @@ export default function DashboardPage() {
       setShowReferralModal(false); // Close the input modal
       console.log('Creating referral with data:', data);
       
-      // Test if API routes are working at all
-      console.log('🧪 Testing API routes...');
-      try {
-        const testResponse = await fetch('/api/test-referrals', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ test: 'data' })
-        });
-        console.log('🧪 Test API response status:', testResponse.status);
-        const testData = await testResponse.json();
-        console.log('🧪 Test API response:', testData);
-      } catch (testError) {
-        console.log('🧪 Test API failed:', testError);
-      }
       
       const newReferral = await createReferral({
         specialty: data.specialty,
