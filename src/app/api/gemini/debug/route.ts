@@ -29,7 +29,7 @@ export async function GET() {
           responseLength?: number;
           rawResponse?: string;
           jsonParsed?: boolean;
-          parsedResponse?: any;
+          parsedResponse?: unknown;
           parseError?: string;
           error?: string;
           errorType?: string;
