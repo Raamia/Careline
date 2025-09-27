@@ -93,7 +93,8 @@ export default function DashboardPage() {
       } else {
         // Try to sync user with database
         console.log('Syncing user with database...');
-        const syncedUser = await syncUser('patient');
+        // Don't force patient role - let the sync process auto-detect the correct role
+        const syncedUser = await syncUser();
         console.log('Sync result:', syncedUser);
         
         if (syncedUser) {
@@ -824,7 +825,10 @@ export default function DashboardPage() {
                           const updatedUser = await updateUserRole('doctor');
                           if (updatedUser) {
                             setUserData(updatedUser);
-                            window.location.reload(); // Refresh to show provider dashboard
+                            // No need to refresh - just update the state
+                            console.log('✅ Role updated to doctor:', updatedUser);
+                          } else {
+                            console.error('❌ Failed to update role');
                           }
                         }}
                         className="enterprise-button secondary text-sm"

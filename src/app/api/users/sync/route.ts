@@ -16,7 +16,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { role = 'patient' } = await request.json()
+    const body = await request.json()
+    const { role = 'patient' } = body || {}
     console.log('👤 Requested role:', role)
 
     // Check if user already exists
@@ -35,24 +36,8 @@ export async function POST(request: NextRequest) {
     if (existingUser) {
       console.log('✅ Existing user found:', existingUser.id)
       
-      // Auto-update to doctor role for specific provider email
-      if (existingUser.email === 'raamiabichou@gmail.com' && existingUser.role === 'patient') {
-        console.log('🏥 Auto-updating existing user to doctor role');
-        const { data: updatedUser, error: updateError } = await supabase
-          .from('users')
-          .update({ role: 'doctor', updated_at: new Date().toISOString() })
-          .eq('id', existingUser.id)
-          .select()
-          .single();
-          
-        if (updateError) {
-          console.log('❌ Error updating user role:', updateError);
-          return NextResponse.json({ user: existingUser });
-        }
-        
-        console.log('✅ User role updated to doctor:', updatedUser);
-        return NextResponse.json({ user: updatedUser });
-      }
+      // Always return existing user as-is (don't override role)
+      console.log('👤 User role in database:', existingUser.role);
       
       return NextResponse.json({ user: existingUser })
     }
