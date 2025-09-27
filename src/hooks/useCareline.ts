@@ -170,7 +170,7 @@ export function useCareline() {
 
   // Summarize medical records using Gemini AI
   const summarizeRecords = async (
-    documentText: string,
+    documentFile: File,
     recordId?: string,
     forDoctor?: boolean
   ) => {
@@ -180,10 +180,14 @@ export function useCareline() {
       setLoading(true)
       setError(null)
 
+      const formData = new FormData()
+      formData.append('documentFile', documentFile)
+      if (recordId) formData.append('recordId', recordId)
+      if (forDoctor !== undefined) formData.append('forDoctor', String(forDoctor))
+
       const response = await fetch('/api/gemini/summarize', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ documentText, recordId, forDoctor })
+        body: formData
       })
 
       if (!response.ok) {

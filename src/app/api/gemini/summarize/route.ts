@@ -10,12 +10,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const body = await request.json()
-    const { documentText, recordId, forDoctor = false } = body
+    const formData = await request.formData()
+    const documentFile = formData.get('documentFile') as File
+    const recordId = formData.get('recordId') as string
+    const forDoctor = formData.get('forDoctor') === 'true'
 
-    if (!documentText) {
+    if (!documentFile) {
       return NextResponse.json(
-        { error: 'Document text is required' },
+        { error: 'Document file is required' },
+        { status: 400 }
+      )
+    }
+
+    if (documentFile.type !== 'application/pdf') {
+      return NextResponse.json(
+        { error: 'Only PDF files are supported' },
         { status: 400 }
       )
     }
@@ -27,8 +36,8 @@ export async function POST(request: NextRequest) {
       .eq('auth0_id', session.user.sub)
       .single()
 
-    // Call Gemini AI to summarize records
-    const result = await summarizeRecords(documentText, forDoctor || user?.role === 'doctor')
+    // Call Gemini AI to summarize records with PDF
+    const result = await summarizeRecords(documentFile, forDoctor || user?.role === 'doctor')
 
     // If recordId provided, update the record with the summary
     if (recordId && !result.error) {

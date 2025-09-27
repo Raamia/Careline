@@ -163,17 +163,16 @@ export async function explainCosts(
   }
 }
 
-// Records Summarizer - Analyze medical documents
+// Records Summarizer - Analyze medical documents from PDF
 export async function summarizeRecords(
-  documentText: string,
+  documentFile: File,
   forDoctor: boolean = false
 ) {
   const prompt = forDoctor 
     ? `
         Act as a medical records AI assistant for healthcare providers.
         
-        Analyze this medical document and provide a clinical summary:
-        ${documentText}
+        Analyze this medical document PDF and provide a clinical summary.
         
         Provide summary in this JSON format:
         {
@@ -188,8 +187,7 @@ export async function summarizeRecords(
     : `
         Act as a patient-friendly medical AI assistant.
         
-        Analyze this medical document and explain it in simple terms:
-        ${documentText}
+        Analyze this medical document PDF and explain it in simple terms.
         
         Provide summary in this JSON format:
         {
@@ -211,21 +209,33 @@ export async function summarizeRecords(
       }
     }
 
-    console.log('📄 Analyzing document using Gemini AI...')
-    const result = await geminiPro.generateContent(prompt) // Use Pro for complex document analysis
+    console.log('📄 Analyzing PDF document using Gemini AI...')
+    
+    // Convert File to base64 for Gemini
+    const arrayBuffer = await documentFile.arrayBuffer()
+    const base64Data = Buffer.from(arrayBuffer).toString('base64')
+    
+    const imagePart = {
+      inlineData: {
+        data: base64Data,
+        mimeType: documentFile.type
+      }
+    }
+
+    const result = await geminiPro.generateContent([prompt, imagePart])
     const response = await result.response
     const text = response.text()
     
-    console.log('✅ Gemini document analysis response received')
+    console.log('✅ Gemini PDF analysis response received')
     
     const jsonMatch = text.match(/\{[\s\S]*\}/)
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0])
-      console.log('📋 Document analysis completed successfully')
+      console.log('📋 PDF analysis completed successfully')
       return parsed
     }
     
-    console.warn('⚠️  No valid JSON found in document analysis response')
+    console.warn('⚠️  No valid JSON found in PDF analysis response')
     return { 
       error: "Invalid response format",
       message: "Unable to parse Gemini response"
@@ -260,7 +270,8 @@ export async function generateReferral(
       "summary": "A professional 3-4 sentence summary that includes the referral purpose, expected timeline, and priority level. Make it clear and informative for both patient and healthcare provider."
     }
     
-    Keep it concise, professional, and include timeline and priority information naturally within the sentences.
+    Keep it concise, professional, and include timeline and priority information naturally within the sentences. 
+    Do NOT include any email addresses, phone numbers, or other personal contact information in the summary.
   `
 
   try {

@@ -6,46 +6,41 @@ import Modal from './Modal';
 interface RecordsSummarizerModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: { documentText: string; forDoctor: boolean }) => void;
+  onSubmit: (data: { documentFile: File; forDoctor: boolean }) => void;
   userRole: 'patient' | 'doctor';
 }
 
 export default function RecordsSummarizerModal({ isOpen, onClose, onSubmit, userRole }: RecordsSummarizerModalProps) {
-  const [documentText, setDocumentText] = useState('');
+  const [documentFile, setDocumentFile] = useState<File | null>(null);
   const [summaryType, setSummaryType] = useState<'patient' | 'doctor'>(userRole);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (documentText.trim()) {
+    if (documentFile) {
       onSubmit({ 
-        documentText: documentText.trim(), 
+        documentFile: documentFile, 
         forDoctor: summaryType === 'doctor' 
       });
-      setDocumentText('');
+      setDocumentFile(null);
       onClose();
     }
   };
 
   const handleClose = () => {
-    setDocumentText('');
+    setDocumentFile(null);
     setSummaryType(userRole);
     onClose();
   };
 
-  const exampleTexts = [
-    {
-      title: "Lab Results",
-      content: "CBC: WBC 7.2, RBC 4.5, Hgb 14.2, Hct 42.1, Platelets 250. Chemistry: Glucose 95, BUN 18, Creatinine 1.0, eGFR >60."
-    },
-    {
-      title: "Radiology Report", 
-      content: "CT Chest w/o contrast: No acute pulmonary embolism. Mild emphysematous changes. Small bilateral pleural effusions."
-    },
-    {
-      title: "Progress Note",
-      content: "Patient reports improvement in shortness of breath since starting ACE inhibitor. Blood pressure well controlled at 125/78. Continue current medications."
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type === 'application/pdf') {
+      setDocumentFile(file);
+    } else {
+      alert('Please select a PDF file only.');
     }
-  ];
+  };
+
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="AI Records Summarizer" maxWidth="xl">
@@ -60,7 +55,7 @@ export default function RecordsSummarizerModal({ isOpen, onClose, onSubmit, user
             </div>
             <div className="ml-3">
               <p className="text-sm text-green-200">
-                Paste medical documents, lab results, or clinical notes. Our AI will create {summaryType === 'doctor' ? 'clinical summaries for healthcare providers' : 'easy-to-understand explanations for patients'}.
+                Upload medical documents, lab results, or clinical notes as PDF files. Our AI will create {summaryType === 'doctor' ? 'clinical summaries for healthcare providers' : 'easy-to-understand explanations for patients'}.
               </p>
             </div>
           </div>
@@ -153,47 +148,63 @@ export default function RecordsSummarizerModal({ isOpen, onClose, onSubmit, user
             </div>
           </div>
 
-          {/* Document Text Input */}
+          {/* Document File Upload */}
           <div>
-            <label htmlFor="documentText" className="block text-sm font-medium text-slate-200 mb-2">
-              Medical Document Text <span className="text-red-400">*</span>
+            <label htmlFor="documentFile" className="block text-sm font-medium text-slate-200 mb-2">
+              Medical Document (PDF) <span className="text-red-400">*</span>
             </label>
-            <textarea
-              id="documentText"
-              value={documentText}
-              onChange={(e) => setDocumentText(e.target.value)}
-              placeholder="Paste your medical document, lab results, clinical notes, or any healthcare text here..."
-              rows={8}
-              className="w-full px-4 py-3 bg-slate-800 border border-slate-600 text-slate-200 placeholder-slate-400 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors duration-200 resize-none font-mono text-sm"
-              required
-            />
-            <div className="mt-2 flex justify-between items-center">
+            
+            <div className="relative">
+              <input
+                type="file"
+                id="documentFile"
+                accept=".pdf"
+                onChange={handleFileChange}
+                className="sr-only"
+                required
+              />
+              
+              <label
+                htmlFor="documentFile"
+                className={`
+                  w-full min-h-[200px] border-2 border-dashed rounded-lg cursor-pointer transition-all duration-200 flex flex-col items-center justify-center p-8
+                  ${documentFile 
+                    ? 'border-green-500 bg-green-500/10 hover:bg-green-500/20' 
+                    : 'border-slate-600 bg-slate-800/50 hover:border-slate-500 hover:bg-slate-800'
+                  }
+                `}
+              >
+                {documentFile ? (
+                  <div className="text-center">
+                    <svg className="w-12 h-12 text-green-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p className="text-green-300 font-medium mb-2">{documentFile.name}</p>
+                    <p className="text-slate-400 text-sm">
+                      {(documentFile.size / 1024 / 1024).toFixed(2)} MB • Click to change
+                    </p>
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <svg className="w-12 h-12 text-slate-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <p className="text-slate-200 font-medium mb-2">Drop your PDF here or click to browse</p>
+                    <p className="text-slate-400 text-sm">
+                      Upload medical documents, lab results, or clinical notes (PDF only)
+                    </p>
+                  </div>
+                )}
+              </label>
+            </div>
+            
+            <div className="mt-2">
               <p className="text-xs text-slate-400">
-                Accepts lab results, radiology reports, clinical notes, discharge summaries, etc.
-              </p>
-              <p className="text-xs text-slate-500">
-                {documentText.length} characters
+                Accepts PDF files containing lab results, radiology reports, clinical notes, discharge summaries, etc.
               </p>
             </div>
           </div>
 
-          {/* Example Documents */}
-          <div>
-            <p className="text-sm font-medium text-slate-200 mb-3">Example documents to try:</p>
-            <div className="space-y-2">
-              {exampleTexts.map((example, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => setDocumentText(example.content)}
-                  className="w-full text-left p-3 border border-slate-600 bg-slate-800/50 rounded-lg hover:border-slate-500 hover:bg-slate-800 transition-colors duration-200"
-                >
-                  <div className="font-medium text-sm text-slate-100">{example.title}</div>
-                  <div className="text-xs text-slate-400 truncate">{example.content}</div>
-                </button>
-              ))}
-            </div>
-          </div>
 
           {/* Action Buttons */}
           <div className="flex space-x-3 pt-6">
@@ -206,7 +217,7 @@ export default function RecordsSummarizerModal({ isOpen, onClose, onSubmit, user
             </button>
             <button
               type="submit"
-              disabled={!documentText.trim()}
+              disabled={!documentFile}
               className="flex-1 px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-slate-600 disabled:text-slate-400 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center space-x-2 font-medium"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

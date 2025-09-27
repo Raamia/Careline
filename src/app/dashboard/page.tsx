@@ -301,11 +301,11 @@ export default function DashboardPage() {
     setShowRecordsModal(true);
   };
 
-  const handleRecordsSubmit = async (data: { documentText: string; forDoctor: boolean }) => {
+  const handleRecordsSubmit = async (data: { documentFile: File; forDoctor: boolean }) => {
     try {
       setShowRecordsModal(false); // Close the input modal
       setIsLoadingRecords(true);
-      const result = await summarizeRecords(data.documentText, undefined, data.forDoctor);
+      const result = await summarizeRecords(data.documentFile, undefined, data.forDoctor);
       if (result && !result.error) {
         setResultData({
           title: data.forDoctor ? 'Clinical Summary' : 'Patient Summary',
@@ -361,7 +361,10 @@ export default function DashboardPage() {
     try {
       setIsLoadingReferral(true);
       const result = await generateReferral(
-        { name: user?.name || 'Patient', age: 35 }, // Demo patient info
+        { 
+          name: (user?.name && !user.name.includes('@')) ? user.name : 'Patient', 
+          age: 35 
+        }, // Demo patient info - no emails
         referral.chief_complaint,
         referral.specialty,
         referral.priority,
