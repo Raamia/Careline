@@ -851,7 +851,7 @@ export default function DashboardPage() {
                  )}
 
           {/* Role Fix for Providers */}
-          {userData && userData.role === 'patient' && (
+          {userData && userData.role === 'patient' && !localStorage.getItem(`dismissed-provider-banner-${userData.id}`) && (
             <div className="enterprise-card border-blue-600/30 mb-6">
               <div className="p-4">
                 <div className="flex">
@@ -870,13 +870,15 @@ export default function DashboardPage() {
                         click the button below to access the Provider Console.
                       </p>
                     </div>
-                    <div className="mt-3">
+                    <div className="mt-3 flex space-x-3">
                       <button
                         onClick={async () => {
+                          // Dismiss banner permanently
+                          localStorage.setItem(`dismissed-provider-banner-${userData.id}`, 'true');
+                          
                           const updatedUser = await updateUserRole('doctor');
                           if (updatedUser) {
                             setUserData(updatedUser);
-                            // No need to refresh - just update the state
                             console.log('✅ Role updated to doctor:', updatedUser);
                           } else {
                             console.error('❌ Failed to update role');
@@ -885,6 +887,18 @@ export default function DashboardPage() {
                         className="enterprise-button secondary text-sm"
                       >
                         Switch to Provider Console
+                      </button>
+                      
+                      <button
+                        onClick={() => {
+                          // Dismiss banner permanently without switching roles
+                          localStorage.setItem(`dismissed-provider-banner-${userData.id}`, 'true');
+                          // Force re-render to hide banner
+                          setUserData({...userData});
+                        }}
+                        className="text-slate-400 hover:text-slate-200 transition-colors text-sm"
+                      >
+                        Dismiss
                       </button>
                     </div>
                   </div>
