@@ -53,7 +53,8 @@ export class AvailabilityAgent {
 
     } catch (error) {
       console.error('Availability Agent: Error fetching availability', error);
-      await serverAgentTaskService.updateTaskStatus(taskId, 'failed', undefined, error.message);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      await serverAgentTaskService.updateTaskStatus(taskId, 'failed', undefined, errorMessage);
       throw error;
     }
   }
