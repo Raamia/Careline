@@ -26,6 +26,7 @@ interface ReferralData {
   status: string;
   priority: string;
   created_at: string;
+  doctor_id?: string;
   doctor?: { name: string };
   patient?: { name: string };
 }
