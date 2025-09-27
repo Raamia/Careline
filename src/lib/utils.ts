@@ -39,3 +39,16 @@ export function formatDistance(meters: number): string {
   }
   return `${miles.toFixed(1)} mi`
 }
+
+export function getUrgencyColor(urgency: 'routine' | 'urgent' | 'stat'): string {
+  switch (urgency) {
+    case 'stat':
+      return 'bg-red-100 text-red-800 border-red-200'
+    case 'urgent':
+      return 'bg-orange-100 text-orange-800 border-orange-200'
+    case 'routine':
+      return 'bg-green-100 text-green-800 border-green-200'
+    default:
+      return 'bg-gray-100 text-gray-800 border-gray-200'
+  }
+}
