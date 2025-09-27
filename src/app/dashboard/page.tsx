@@ -87,7 +87,7 @@ export default function DashboardPage() {
   }, [user, isLoading, router, userData, initializeUser]);
 
   const handleCreateReferral = async () => {
-    if (userData.id === 'demo-user') {
+    if (userData?.id === 'demo-user') {
       alert('Demo Mode: To create real referrals, please set up Supabase database using the INTEGRATION_SETUP.md guide.');
       return;
     }
@@ -109,7 +109,7 @@ export default function DashboardPage() {
   };
 
   const handleAskGemini = async (referral: ReferralData) => {
-    if (userData.id === 'demo-user') {
+    if (userData?.id === 'demo-user') {
       alert('Demo Mode: To use AI specialist search, please set up Gemini API using the INTEGRATION_SETUP.md guide.');
       return;
     }
@@ -121,7 +121,7 @@ export default function DashboardPage() {
   };
 
   const handleCostExplainer = async () => {
-    if (userData.id === 'demo-user') {
+    if (userData?.id === 'demo-user') {
       alert('Demo Mode: To use AI cost analysis, please set up Gemini API using the INTEGRATION_SETUP.md guide.');
       return;
     }
@@ -138,7 +138,7 @@ export default function DashboardPage() {
   };
 
   const handleRecordsSummarizer = async () => {
-    if (userData.id === 'demo-user') {
+    if (userData?.id === 'demo-user') {
       alert('Demo Mode: To use AI document analysis, please set up Gemini API using the INTEGRATION_SETUP.md guide.');
       return;
     }
@@ -154,7 +154,7 @@ export default function DashboardPage() {
   };
 
   const handleGenerateReferral = async (referral: ReferralData) => {
-    if (userData.id === 'demo-user') {
+    if (userData?.id === 'demo-user') {
       alert('Demo Mode: To use AI referral generation, please set up Gemini API using the INTEGRATION_SETUP.md guide.');
       return;
     }
@@ -661,7 +661,7 @@ export default function DashboardPage() {
                     </h3>
                     <div className="mt-2 text-sm text-yellow-700">
                       <p>
-                        You're viewing a demo version. To enable full functionality with real data and AI features, 
+                        You&apos;re viewing a demo version. To enable full functionality with real data and AI features, 
                         please set up Supabase and Gemini API using the <code className="bg-yellow-100 px-1 rounded">INTEGRATION_SETUP.md</code> guide.
                       </p>
                     </div>
