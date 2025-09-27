@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@auth0/nextjs-auth0';
-import { serverReferralService, serverDecisionCardService } from '../../lib/database';
-import { Referral } from '../../types';
+import { serverReferralService, serverDecisionCardService } from '../../../lib/database';
+import { Referral } from '../../../types';
 
 export async function POST(request: NextRequest) {
   try {
