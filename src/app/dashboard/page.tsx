@@ -5,6 +5,10 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useCallback } from 'react';
 import { useCareline } from '@/hooks/useCareline';
+import ReferralModal from '@/components/ReferralModal';
+import CostExplainerModal from '@/components/CostExplainerModal';
+import RecordsSummarizerModal from '@/components/RecordsSummarizerModal';
+import ResultModal from '@/components/ResultModal';
 
 interface UserData {
   id: string;
@@ -30,6 +34,17 @@ export default function DashboardPage() {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [referrals, setReferrals] = useState<ReferralData[]>([]);
   const [loadingData, setLoadingData] = useState(true);
+  
+  // Modal states
+  const [showReferralModal, setShowReferralModal] = useState(false);
+  const [showCostModal, setShowCostModal] = useState(false);
+  const [showRecordsModal, setShowRecordsModal] = useState(false);
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [resultData, setResultData] = useState<{
+    title: string;
+    type: 'specialists' | 'costs' | 'summary' | 'referral';
+    data: any;
+  } | null>(null);
   const { 
     syncUser, 
     getReferrals, 
@@ -102,25 +117,23 @@ export default function DashboardPage() {
     }
   }, [user, isLoading, router, userData, initializeUser]);
 
-  const handleCreateReferral = async () => {
+  const handleCreateReferral = () => {
     if (userData?.id === 'demo-user') {
       alert('Demo Mode: To create real referrals, please set up Supabase database using the INTEGRATION_SETUP.md guide.');
       return;
     }
+    setShowReferralModal(true);
+  };
 
-    const specialty = prompt('What specialty do you need? (e.g., Cardiology, Dermatology)');
-    const complaint = prompt('Briefly describe your chief complaint:');
+  const handleReferralSubmit = async (data: { specialty: string; complaint: string; priority: 'routine' | 'urgent' | 'stat' }) => {
+    const newReferral = await createReferral({
+      specialty: data.specialty,
+      chief_complaint: data.complaint,
+      priority: data.priority
+    });
     
-    if (specialty && complaint) {
-      const newReferral = await createReferral({
-        specialty,
-        chief_complaint: complaint,
-        priority: 'routine'
-      });
-      
-      if (newReferral) {
-        setReferrals([newReferral, ...referrals]);
-      }
+    if (newReferral) {
+      setReferrals([newReferral, ...referrals]);
     }
   };
 
@@ -131,41 +144,53 @@ export default function DashboardPage() {
     }
 
     const result = await findSpecialists(referral.specialty, '32304', 'Blue Cross');
-    if (result?.specialists?.length > 0) {
-      alert(`Found ${result.specialists.length} specialists:\n\n${result.specialists.map((s: { name: string; practice: string }) => `${s.name} - ${s.practice}`).join('\n')}`);
+    if (result) {
+      setResultData({
+        title: `Specialists for ${referral.specialty}`,
+        type: 'specialists',
+        data: result
+      });
+      setShowResultModal(true);
     }
   };
 
-  const handleCostExplainer = async () => {
+  const handleCostExplainer = () => {
     if (userData?.id === 'demo-user') {
       alert('Demo Mode: To use AI cost analysis, please set up Gemini API using the INTEGRATION_SETUP.md guide.');
       return;
     }
+    setShowCostModal(true);
+  };
 
-    const procedure = prompt('What procedure do you need cost information for?');
-    const insurance = prompt('What insurance do you have? (or press Cancel to skip)');
-    
-    if (procedure) {
-      const result = await explainCosts(procedure, insurance || '');
-      if (result && !result.error) {
-        alert(`Cost Estimate: ${result.estimatedCost}\n\nExplanation: ${result.explanation}`);
-      }
+  const handleCostSubmit = async (data: { procedure: string; insurance: string }) => {
+    const result = await explainCosts(data.procedure, data.insurance);
+    if (result && !result.error) {
+      setResultData({
+        title: `Cost Analysis: ${data.procedure}`,
+        type: 'costs',
+        data: result
+      });
+      setShowResultModal(true);
     }
   };
 
-  const handleRecordsSummarizer = async () => {
+  const handleRecordsSummarizer = () => {
     if (userData?.id === 'demo-user') {
       alert('Demo Mode: To use AI document analysis, please set up Gemini API using the INTEGRATION_SETUP.md guide.');
       return;
     }
+    setShowRecordsModal(true);
+  };
 
-    const documentText = prompt('Paste your medical document text or summary:');
-    if (documentText) {
-      const result = await summarizeRecords(documentText, undefined, userData?.role === 'doctor');
-      if (result && !result.error) {
-        const summary = userData?.role === 'doctor' ? result.clinicalSummary : result.patientSummary;
-        alert(`AI Summary:\n\n${summary}`);
-      }
+  const handleRecordsSubmit = async (data: { documentText: string; forDoctor: boolean }) => {
+    const result = await summarizeRecords(data.documentText, undefined, data.forDoctor);
+    if (result && !result.error) {
+      setResultData({
+        title: data.forDoctor ? 'Clinical Summary' : 'Patient Summary',
+        type: 'summary',
+        data: result
+      });
+      setShowResultModal(true);
     }
   };
 
@@ -184,7 +209,12 @@ export default function DashboardPage() {
     );
     
     if (result && !result.error) {
-      alert(`Referral Generated!\n\nInstructions: ${result.patientInstructions}\n\nTimeframe: ${result.estimatedTimeframe}`);
+      setResultData({
+        title: `Referral Packet: ${referral.specialty}`,
+        type: 'referral',
+        data: result
+      });
+      setShowResultModal(true);
     }
   };
 
@@ -706,6 +736,39 @@ export default function DashboardPage() {
           {userData.role === 'patient' ? <PatientDashboard /> : <DoctorDashboard />}
         </div>
       </main>
+
+      {/* Modals */}
+      <ReferralModal
+        isOpen={showReferralModal}
+        onClose={() => setShowReferralModal(false)}
+        onSubmit={handleReferralSubmit}
+      />
+      
+      <CostExplainerModal
+        isOpen={showCostModal}
+        onClose={() => setShowCostModal(false)}
+        onSubmit={handleCostSubmit}
+      />
+      
+      <RecordsSummarizerModal
+        isOpen={showRecordsModal}
+        onClose={() => setShowRecordsModal(false)}
+        onSubmit={handleRecordsSubmit}
+        userRole={userData.role}
+      />
+      
+      {resultData && (
+        <ResultModal
+          isOpen={showResultModal}
+          onClose={() => {
+            setShowResultModal(false);
+            setResultData(null);
+          }}
+          title={resultData.title}
+          type={resultData.type}
+          data={resultData.data}
+        />
+      )}
     </div>
   );
 }
