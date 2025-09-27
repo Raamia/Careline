@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useCareline } from '@/hooks/useCareline';
 
 interface UserData {
@@ -37,23 +37,10 @@ export default function DashboardPage() {
     findSpecialists, 
     explainCosts, 
     summarizeRecords, 
-    generateReferral,
-    loading,
-    error 
+    generateReferral
   } = useCareline();
 
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push('/login');
-      return;
-    }
-
-    if (user && !userData) {
-      initializeUser();
-    }
-  }, [user, isLoading, router, userData]);
-
-  const initializeUser = async () => {
+  const initializeUser = useCallback(async () => {
     try {
       setLoadingData(true);
       // Sync user with database and get role
@@ -69,7 +56,18 @@ export default function DashboardPage() {
     } finally {
       setLoadingData(false);
     }
-  };
+  }, [syncUser, getReferrals]);
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/login');
+      return;
+    }
+
+    if (user && !userData) {
+      initializeUser();
+    }
+  }, [user, isLoading, router, userData, initializeUser]);
 
   const handleCreateReferral = async () => {
     const specialty = prompt('What specialty do you need? (e.g., Cardiology, Dermatology)');
@@ -91,7 +89,7 @@ export default function DashboardPage() {
   const handleAskGemini = async (referral: ReferralData) => {
     const result = await findSpecialists(referral.specialty, '32304', 'Blue Cross');
     if (result?.specialists?.length > 0) {
-      alert(`Found ${result.specialists.length} specialists:\n\n${result.specialists.map((s: any) => `${s.name} - ${s.practice}`).join('\n')}`);
+      alert(`Found ${result.specialists.length} specialists:\n\n${result.specialists.map((s: { name: string; practice: string }) => `${s.name} - ${s.practice}`).join('\n')}`);
     }
   };
 
@@ -120,7 +118,7 @@ export default function DashboardPage() {
 
   const handleGenerateReferral = async (referral: ReferralData) => {
     const result = await generateReferral(
-      { name: user?.name, age: 35 }, // Demo patient info
+      { name: user?.name || 'Patient', age: 35 }, // Demo patient info
       referral.chief_complaint,
       referral.specialty,
       referral.priority,

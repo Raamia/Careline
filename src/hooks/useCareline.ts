@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useUser } from '@auth0/nextjs-auth0/client'
 
 // Custom hook for Careline API calls
@@ -181,7 +181,7 @@ export function useCareline() {
 
   // Generate referral using Gemini AI
   const generateReferral = async (
-    patientInfo: any,
+    patientInfo: { name: string; age: number },
     chiefComplaint: string,
     specialty: string,
     urgency?: string,

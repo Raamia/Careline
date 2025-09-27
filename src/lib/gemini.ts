@@ -160,7 +160,7 @@ export async function summarizeRecords(
 
 // Referral Generator - Create standardized referral packets
 export async function generateReferral(
-  patientInfo: any,
+  patientInfo: { name: string; age: number },
   chiefComplaint: string,
   specialty: string,
   urgency: string
