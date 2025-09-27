@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   console.log('🏥 POST /api/referrals/[id]/accept called')
   
@@ -18,7 +18,7 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const referralId = params.id
+    const { id: referralId } = await params
     console.log('📋 Referral ID:', referralId)
 
     // Get doctor from database
