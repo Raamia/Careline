@@ -311,6 +311,37 @@ export default function DashboardPage() {
     }
   };
 
+  const handleAcceptReferral = async (referral: ReferralData) => {
+    if (userData?.id === 'demo-user') {
+      alert('Demo Mode: To accept referrals, please set up Supabase database using the INTEGRATION_SETUP.md guide.');
+      return;
+    }
+
+    try {
+      console.log('🏥 Accepting referral:', referral.id);
+      
+      const response = await fetch(`/api/referrals/${referral.id}/accept`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to accept referral');
+      }
+
+      const result = await response.json();
+      console.log('✅ Referral accepted:', result);
+
+      // Refresh referrals list
+      const updatedReferrals = await getReferrals();
+      if (Array.isArray(updatedReferrals)) {
+        setReferrals(updatedReferrals);
+      }
+    } catch (error) {
+      console.error('❌ Error accepting referral:', error);
+    }
+  };
+
   const handleGenerateReferral = async (referral: ReferralData) => {
     if (userData?.id === 'demo-user') {
       alert('Demo Mode: To use AI referral generation, please set up Gemini API using the INTEGRATION_SETUP.md guide.');
@@ -520,8 +551,9 @@ export default function DashboardPage() {
   };
 
   const DoctorDashboard = () => {
-    const newReferrals = referrals.filter(r => r.status === 'pending').length;
-    const activePatients = referrals.filter(r => r.status === 'accepted').length;
+    const newReferrals = referrals.filter(r => r.status === 'pending' && !r.doctor_id).length;
+    const myReferrals = referrals.filter(r => r.doctor_id === userData?.id).length;
+    const activePatients = referrals.filter(r => r.status === 'accepted' && r.doctor_id === userData?.id).length;
 
     return (
       <div className="space-y-8">
@@ -549,13 +581,28 @@ export default function DashboardPage() {
           <div className="enterprise-metric">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-slate-400 text-sm font-medium">Pending Review</p>
+                <p className="text-slate-400 text-sm font-medium">New Referrals</p>
                 <p className="text-3xl font-bold text-slate-100 mt-2">{newReferrals}</p>
-                <p className="text-slate-400 text-xs mt-1">Requires attention</p>
+                <p className="text-slate-400 text-xs mt-1">From patients</p>
               </div>
               <div className="w-12 h-12 bg-amber-600/20 rounded-xl flex items-center justify-center">
                 <svg className="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="enterprise-metric">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-slate-400 text-sm font-medium">My Referrals</p>
+                <p className="text-3xl font-bold text-slate-100 mt-2">{myReferrals}</p>
+                <p className="text-slate-400 text-xs mt-1">Assigned to me</p>
+              </div>
+              <div className="w-12 h-12 bg-green-600/20 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
             </div>
@@ -583,9 +630,9 @@ export default function DashboardPage() {
                 <p className="text-3xl font-bold text-slate-100 mt-2">{referrals.length}</p>
                 <p className="text-slate-400 text-xs mt-1">All referrals</p>
               </div>
-              <div className="w-12 h-12 bg-green-600/20 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              <div className="w-12 h-12 bg-purple-600/20 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
               </div>
             </div>
@@ -671,8 +718,11 @@ export default function DashboardPage() {
                           >
                             Review
                           </button>
-                          {referral.status === 'pending' && (
-                            <button className="enterprise-button secondary text-xs px-3 py-1">
+                          {referral.status === 'pending' && !referral.doctor_id && (
+                            <button 
+                              onClick={() => handleAcceptReferral(referral)}
+                              className="enterprise-button secondary text-xs px-3 py-1"
+                            >
                               Accept
                             </button>
                           )}

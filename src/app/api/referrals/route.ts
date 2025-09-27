@@ -36,7 +36,7 @@ export async function GET() {
       if (error) throw error
       referrals = data
     } else if (user.role === 'doctor') {
-      // Get referrals assigned to this doctor
+      // Get all referrals for doctors (pending + assigned to them)
       const { data, error } = await supabase
         .from('referrals')
         .select(`
@@ -44,7 +44,7 @@ export async function GET() {
           patient:patient_id(name, email),
           referring_doctor:referring_doctor_id(name, email)
         `)
-        .eq('doctor_id', user.id)
+        .or(`doctor_id.is.null,doctor_id.eq.${user.id}`)
         .order('created_at', { ascending: false })
 
       if (error) throw error
