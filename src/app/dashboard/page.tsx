@@ -9,6 +9,7 @@ import ReferralModal from '@/components/ReferralModal';
 import CostExplainerModal from '@/components/CostExplainerModal';
 import RecordsSummarizerModal from '@/components/RecordsSummarizerModal';
 import ResultModal from '@/components/ResultModal';
+import LoadingModal from '@/components/LoadingModal';
 
 interface UserData {
   id: string;
@@ -45,6 +46,12 @@ export default function DashboardPage() {
     type: 'specialists' | 'costs' | 'summary' | 'referral';
     data: unknown;
   } | null>(null);
+
+  // AI Loading states
+  const [isLoadingSpecialists, setIsLoadingSpecialists] = useState(false);
+  const [isLoadingCosts, setIsLoadingCosts] = useState(false);
+  const [isLoadingRecords, setIsLoadingRecords] = useState(false);
+  const [isLoadingReferral, setIsLoadingReferral] = useState(false);
   const { 
     syncUser, 
     getReferrals, 
@@ -126,6 +133,7 @@ export default function DashboardPage() {
   };
 
   const handleReferralSubmit = async (data: { specialty: string; complaint: string; priority: 'routine' | 'urgent' | 'stat' }) => {
+    setShowReferralModal(false); // Close the input modal
     const newReferral = await createReferral({
       specialty: data.specialty,
       chief_complaint: data.complaint,
@@ -143,14 +151,21 @@ export default function DashboardPage() {
       return;
     }
 
-    const result = await findSpecialists(referral.specialty, '32304', 'Blue Cross');
-    if (result) {
-      setResultData({
-        title: `Specialists for ${referral.specialty}`,
-        type: 'specialists',
-        data: result
-      });
-      setShowResultModal(true);
+    try {
+      setIsLoadingSpecialists(true);
+      const result = await findSpecialists(referral.specialty, '32304', 'Blue Cross');
+      if (result) {
+        setResultData({
+          title: `Specialists for ${referral.specialty}`,
+          type: 'specialists',
+          data: result
+        });
+        setShowResultModal(true);
+      }
+    } catch (error) {
+      console.error('Error finding specialists:', error);
+    } finally {
+      setIsLoadingSpecialists(false);
     }
   };
 
@@ -163,14 +178,22 @@ export default function DashboardPage() {
   };
 
   const handleCostSubmit = async (data: { procedure: string; insurance: string }) => {
-    const result = await explainCosts(data.procedure, data.insurance);
-    if (result && !result.error) {
-      setResultData({
-        title: `Cost Analysis: ${data.procedure}`,
-        type: 'costs',
-        data: result
-      });
-      setShowResultModal(true);
+    try {
+      setShowCostModal(false); // Close the input modal
+      setIsLoadingCosts(true);
+      const result = await explainCosts(data.procedure, data.insurance);
+      if (result && !result.error) {
+        setResultData({
+          title: `Cost Analysis: ${data.procedure}`,
+          type: 'costs',
+          data: result
+        });
+        setShowResultModal(true);
+      }
+    } catch (error) {
+      console.error('Error analyzing costs:', error);
+    } finally {
+      setIsLoadingCosts(false);
     }
   };
 
@@ -183,14 +206,22 @@ export default function DashboardPage() {
   };
 
   const handleRecordsSubmit = async (data: { documentText: string; forDoctor: boolean }) => {
-    const result = await summarizeRecords(data.documentText, undefined, data.forDoctor);
-    if (result && !result.error) {
-      setResultData({
-        title: data.forDoctor ? 'Clinical Summary' : 'Patient Summary',
-        type: 'summary',
-        data: result
-      });
-      setShowResultModal(true);
+    try {
+      setShowRecordsModal(false); // Close the input modal
+      setIsLoadingRecords(true);
+      const result = await summarizeRecords(data.documentText, undefined, data.forDoctor);
+      if (result && !result.error) {
+        setResultData({
+          title: data.forDoctor ? 'Clinical Summary' : 'Patient Summary',
+          type: 'summary',
+          data: result
+        });
+        setShowResultModal(true);
+      }
+    } catch (error) {
+      console.error('Error analyzing records:', error);
+    } finally {
+      setIsLoadingRecords(false);
     }
   };
 
@@ -200,21 +231,28 @@ export default function DashboardPage() {
       return;
     }
 
-    const result = await generateReferral(
-      { name: user?.name || 'Patient', age: 35 }, // Demo patient info
-      referral.chief_complaint,
-      referral.specialty,
-      referral.priority,
-      referral.id
-    );
-    
-    if (result && !result.error) {
-      setResultData({
-        title: `Referral Packet: ${referral.specialty}`,
-        type: 'referral',
-        data: result
-      });
-      setShowResultModal(true);
+    try {
+      setIsLoadingReferral(true);
+      const result = await generateReferral(
+        { name: user?.name || 'Patient', age: 35 }, // Demo patient info
+        referral.chief_complaint,
+        referral.specialty,
+        referral.priority,
+        referral.id
+      );
+      
+      if (result && !result.error) {
+        setResultData({
+          title: `Referral Packet: ${referral.specialty}`,
+          type: 'referral',
+          data: result
+        });
+        setShowResultModal(true);
+      }
+    } catch (error) {
+      console.error('Error generating referral:', error);
+    } finally {
+      setIsLoadingReferral(false);
     }
   };
 
@@ -672,38 +710,63 @@ export default function DashboardPage() {
         </main>
       </div>
 
-      {/* Modals */}
-      <ReferralModal
-        isOpen={showReferralModal}
-        onClose={() => setShowReferralModal(false)}
-        onSubmit={handleReferralSubmit}
-      />
-      
-      <CostExplainerModal
-        isOpen={showCostModal}
-        onClose={() => setShowCostModal(false)}
-        onSubmit={handleCostSubmit}
-      />
-      
-      <RecordsSummarizerModal
-        isOpen={showRecordsModal}
-        onClose={() => setShowRecordsModal(false)}
-        onSubmit={handleRecordsSubmit}
-        userRole={userData?.role || 'patient'}
-      />
-      
-      {resultData && (
-        <ResultModal
-          isOpen={showResultModal}
-          onClose={() => {
-            setShowResultModal(false);
-            setResultData(null);
-          }}
-          title={resultData.title}
-          type={resultData.type}
-          data={resultData.data}
-        />
-      )}
+               {/* Modals */}
+               <ReferralModal
+                 isOpen={showReferralModal}
+                 onClose={() => setShowReferralModal(false)}
+                 onSubmit={handleReferralSubmit}
+               />
+               
+               <CostExplainerModal
+                 isOpen={showCostModal}
+                 onClose={() => setShowCostModal(false)}
+                 onSubmit={handleCostSubmit}
+               />
+               
+               <RecordsSummarizerModal
+                 isOpen={showRecordsModal}
+                 onClose={() => setShowRecordsModal(false)}
+                 onSubmit={handleRecordsSubmit}
+                 userRole={userData?.role || 'patient'}
+               />
+               
+               {resultData && (
+                 <ResultModal
+                   isOpen={showResultModal}
+                   onClose={() => {
+                     setShowResultModal(false);
+                     setResultData(null);
+                   }}
+                   title={resultData.title}
+                   type={resultData.type}
+                   data={resultData.data}
+                 />
+               )}
+
+               {/* AI Loading Modals */}
+               <LoadingModal
+                 isOpen={isLoadingSpecialists}
+                 title="Finding Specialists"
+                 message="Our AI is searching for qualified healthcare providers in your area. This may take a few moments..."
+               />
+               
+               <LoadingModal
+                 isOpen={isLoadingCosts}
+                 title="Analyzing Costs"
+                 message="AI is calculating estimated costs and insurance coverage details for your procedure..."
+               />
+               
+               <LoadingModal
+                 isOpen={isLoadingRecords}
+                 title="Analyzing Documents"
+                 message="Our AI is carefully reviewing your medical documents and preparing a comprehensive summary..."
+               />
+               
+               <LoadingModal
+                 isOpen={isLoadingReferral}
+                 title="Generating Referral"
+                 message="AI is creating a professional referral packet with all necessary documentation and instructions..."
+               />
     </div>
   );
 }
