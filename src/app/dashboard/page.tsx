@@ -325,13 +325,18 @@ export default function DashboardPage() {
         referral.id
       );
       
+      console.log('🔍 Referral generation result:', result);
+      
       if (result && !result.error) {
+        console.log('📋 Setting referral result data:', result);
         setResultData({
           title: `Referral Packet: ${referral.specialty}`,
           type: 'referral',
           data: result
         });
         setShowResultModal(true);
+      } else {
+        console.error('❌ Failed to generate referral:', result);
       }
     } catch (error) {
       console.error('Error generating referral:', error);

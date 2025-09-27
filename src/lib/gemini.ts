@@ -277,12 +277,12 @@ export async function generateReferral(
     const response = await result.response
     const text = response.text()
     
-    console.log('✅ Gemini referral generation response received')
+    console.log('✅ Gemini referral generation response received:', text)
     
     const jsonMatch = text.match(/\{[\s\S]*\}/)
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0])
-      console.log('📋 Referral generated successfully')
+      console.log('📋 Referral generated successfully:', parsed)
       return parsed
     }
     

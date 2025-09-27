@@ -240,13 +240,24 @@ export default function ResultModal({ isOpen, onClose, title, type, data }: Resu
   const renderReferral = () => {
     const referralData = data as ReferralData;
     
+    console.log('🔍 Rendering referral with data:', referralData);
+    
     return (
       <div className="space-y-4">
-        {referralData.summary && (
+        {referralData?.summary ? (
           <div className="enterprise-card p-6">
             <p className="text-gray-300 leading-relaxed text-lg">
               {referralData.summary}
             </p>
+          </div>
+        ) : (
+          <div className="enterprise-card p-6">
+            <p className="text-gray-400 text-center">
+              No referral summary available. Please try generating the referral again.
+            </p>
+            <pre className="text-xs text-gray-500 mt-4 overflow-auto">
+              {JSON.stringify(referralData, null, 2)}
+            </pre>
           </div>
         )}
       </div>
