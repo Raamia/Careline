@@ -60,8 +60,8 @@ export async function GET() {
       console.log('🧪 Testing Gemini API connection...')
       const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
       
-      // Test with Gemini Pro
-      const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+      // Test with Gemini 2.5 Flash (balanced performance)
+      const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
       
       const testPrompt = 'Respond with exactly this JSON: {"status": "success", "message": "Gemini API is working"}'
       const result = await model.generateContent(testPrompt)
@@ -72,7 +72,7 @@ export async function GET() {
       
       results.tests.connectionTest = {
         success: true,
-        model: 'gemini-pro',
+        model: 'gemini-2.5-flash',
         responseReceived: true,
         responseLength: text.length,
         rawResponse: text.substring(0, 500) + (text.length > 500 ? '...' : '')

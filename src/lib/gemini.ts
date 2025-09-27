@@ -6,11 +6,11 @@ if (!process.env.GEMINI_API_KEY) {
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'dummy-key')
 
-// Gemini Pro model for general queries (corrected model name)
-export const geminiPro = genAI.getGenerativeModel({ model: 'gemini-pro' })
+// Gemini 2.5 Pro model for advanced reasoning tasks
+export const geminiPro = genAI.getGenerativeModel({ model: 'gemini-2.5-pro' })
 
-// Gemini Pro Vision for document analysis with images
-export const geminiProVision = genAI.getGenerativeModel({ model: 'gemini-pro-vision' })
+// Gemini 2.5 Flash for balanced performance and cost
+export const geminiFlash = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
 
 // Directory Agent - Find specialists
 export async function findSpecialists(
@@ -53,7 +53,7 @@ export async function findSpecialists(
     }
 
     console.log('🔍 Searching for specialists using Gemini AI...')
-    const result = await geminiPro.generateContent(prompt)
+    const result = await geminiFlash.generateContent(prompt)
     const response = await result.response
     const text = response.text()
     
@@ -113,7 +113,7 @@ export async function explainCosts(
     }
 
     console.log('💰 Analyzing costs using Gemini AI...')
-    const result = await geminiPro.generateContent(prompt)
+    const result = await geminiFlash.generateContent(prompt)
     const response = await result.response
     const text = response.text()
     
