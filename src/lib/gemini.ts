@@ -7,7 +7,7 @@ if (!process.env.GEMINI_API_KEY) {
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'dummy-key')
 
 // Gemini 2.5 Pro model for advanced reasoning tasks
-export const geminiPro = genAI.getGenerativeModel({ model: 'gemini-2.5-pro' })
+export const geminiPro = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
 
 // Gemini 2.5 Flash for balanced performance and cost
 export const geminiFlash = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })

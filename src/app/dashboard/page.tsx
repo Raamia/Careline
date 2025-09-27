@@ -132,23 +132,59 @@ export default function DashboardPage() {
   }, [user, isLoading, router, userData, initializeUser]);
 
   const handleCreateReferral = () => {
+    console.log('Create referral clicked, userData:', userData);
+    
     if (userData?.id === 'demo-user') {
       alert('Demo Mode: To create real referrals, please set up Supabase database using the INTEGRATION_SETUP.md guide.');
       return;
     }
+    
+    if (!userData) {
+      alert('❌ User data not loaded. Please refresh the page and try again.');
+      return;
+    }
+    
+    console.log('Opening referral modal for user:', userData.id);
     setShowReferralModal(true);
   };
 
   const handleReferralSubmit = async (data: { specialty: string; complaint: string; priority: 'routine' | 'urgent' | 'stat' }) => {
-    setShowReferralModal(false); // Close the input modal
-    const newReferral = await createReferral({
-      specialty: data.specialty,
-      chief_complaint: data.complaint,
-      priority: data.priority
-    });
-    
-    if (newReferral) {
-      setReferrals([newReferral, ...referrals]);
+    try {
+      setShowReferralModal(false); // Close the input modal
+      console.log('Creating referral with data:', data);
+      
+      const newReferral = await createReferral({
+        specialty: data.specialty,
+        chief_complaint: data.complaint,
+        priority: data.priority
+      });
+      
+      console.log('Referral creation result:', newReferral);
+      
+      if (newReferral) {
+        console.log('Adding new referral to list');
+        setReferrals([newReferral, ...referrals]);
+        
+        // Refresh referrals list to ensure it's up to date
+        try {
+          const updatedReferrals = await getReferrals();
+          if (Array.isArray(updatedReferrals)) {
+            setReferrals(updatedReferrals);
+            console.log('Referrals list refreshed');
+          }
+        } catch (refreshError) {
+          console.warn('Failed to refresh referrals list:', refreshError);
+        }
+        
+        // Show success feedback
+        alert(`✅ Referral created successfully!\n\nSpecialty: ${newReferral.specialty}\nPriority: ${newReferral.priority}\nStatus: ${newReferral.status}`);
+      } else {
+        console.error('No referral returned from API');
+        alert('❌ Failed to create referral. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error creating referral:', error);
+      alert('❌ Error creating referral. Please check your connection and try again.');
     }
   };
 
@@ -709,31 +745,34 @@ export default function DashboardPage() {
       {/* Main Content */}
       <div className="ml-64 min-h-screen">
         <main className="p-8">
-          {/* Database Status Notice */}
-          {userData.id === 'demo-user' && (
-            <div className="enterprise-card border-amber-600/30 mb-6">
-              <div className="p-4">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="ml-3">
-                    <h3 className="text-sm font-medium text-amber-300">
-                      Demo Mode - Limited Functionality
-                    </h3>
-                    <div className="mt-2 text-sm text-slate-300">
-                      <p>
-                        Running in demonstration mode. Configure Supabase and Gemini API for full functionality.
-                        <code className="bg-slate-800 px-1 rounded ml-1 text-amber-300">INTEGRATION_SETUP.md</code>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+                 {/* Database Status Notice */}
+                 {userData?.id === 'demo-user' && (
+                   <div className="enterprise-card border-amber-600/30 mb-6">
+                     <div className="p-4">
+                       <div className="flex">
+                         <div className="flex-shrink-0">
+                           <svg className="h-5 w-5 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                             <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                           </svg>
+                         </div>
+                         <div className="ml-3">
+                           <h3 className="text-sm font-medium text-amber-300">
+                             Demo Mode - Limited Functionality
+                           </h3>
+                           <div className="mt-2 text-sm text-slate-300">
+                             <p>
+                               Running in demonstration mode. Configure Supabase and Gemini API for full functionality.
+                               <code className="bg-slate-800 px-1 rounded ml-1 text-amber-300">INTEGRATION_SETUP.md</code>
+                             </p>
+                             <p className="mt-2 text-xs text-amber-400">
+                               User ID: {userData?.id} | Auth0 ID: {user?.sub}
+                             </p>
+                           </div>
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 )}
 
           {/* Role-based Dashboard Content */}
           {userData.role === 'patient' ? <PatientDashboard /> : <DoctorDashboard />}
