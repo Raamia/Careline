@@ -70,14 +70,12 @@ export async function GET() {
       
       console.log('✅ Gemini API test response:', text)
       
-      results.tests = {
-        connectionTest: {
-          success: true,
-          model: 'gemini-1.5-flash',
-          responseReceived: true,
-          responseLength: text.length,
-          rawResponse: text.substring(0, 500) + (text.length > 500 ? '...' : '')
-        }
+      results.tests.connectionTest = {
+        success: true,
+        model: 'gemini-1.5-flash',
+        responseReceived: true,
+        responseLength: text.length,
+        rawResponse: text.substring(0, 500) + (text.length > 500 ? '...' : '')
       }
 
       // Try to parse JSON response
@@ -105,12 +103,10 @@ export async function GET() {
     } catch (apiError) {
       console.error('🚨 Gemini API test failed:', apiError)
       
-      results.tests = {
-        connectionTest: {
-          success: false,
-          error: apiError instanceof Error ? apiError.message : String(apiError),
-          errorType: apiError instanceof Error ? apiError.constructor.name : 'Unknown'
-        }
+      results.tests.connectionTest = {
+        success: false,
+        error: apiError instanceof Error ? apiError.message : String(apiError),
+        errorType: apiError instanceof Error ? apiError.constructor.name : 'Unknown'
       }
 
       // Analyze common error types
