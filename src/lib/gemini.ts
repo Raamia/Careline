@@ -1,12 +1,16 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
+if (!process.env.GEMINI_API_KEY) {
+  console.error('⚠️  GEMINI_API_KEY is not set. Gemini features will not work.')
+}
 
-// Gemini Pro model for general queries
-export const geminiPro = genAI.getGenerativeModel({ model: 'gemini-pro' })
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'dummy-key')
 
-// Gemini Pro Vision for document analysis
-export const geminiProVision = genAI.getGenerativeModel({ model: 'gemini-pro-vision' })
+// Gemini 1.5 Pro model for general queries (updated model name)
+export const geminiPro = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' })
+
+// Gemini 1.5 Flash for faster responses
+export const geminiFlash = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
 
 // Directory Agent - Find specialists
 export async function findSpecialists(
@@ -39,20 +43,39 @@ export async function findSpecialists(
   `
 
   try {
-    const result = await geminiPro.generateContent(prompt)
+    if (!process.env.GEMINI_API_KEY) {
+      console.error('🚨 Gemini API key missing for specialist search')
+      return { 
+        error: 'Gemini API not configured',
+        specialists: [],
+        message: 'Please set GEMINI_API_KEY environment variable'
+      }
+    }
+
+    console.log('🔍 Searching for specialists using Gemini AI...')
+    const result = await geminiFlash.generateContent(prompt)
     const response = await result.response
     const text = response.text()
+    
+    console.log('✅ Gemini response received:', text.substring(0, 200) + '...')
     
     // Parse JSON response
     const jsonMatch = text.match(/\{[\s\S]*\}/)
     if (jsonMatch) {
-      return JSON.parse(jsonMatch[0])
+      const parsed = JSON.parse(jsonMatch[0])
+      console.log('📋 Found', parsed.specialists?.length || 0, 'specialists')
+      return parsed
     }
     
-    return { specialists: [] }
+    console.warn('⚠️  No valid JSON found in Gemini response')
+    return { specialists: [], error: 'Invalid response format' }
   } catch (error) {
-    console.error('Gemini API error:', error)
-    return { specialists: [] }
+    console.error('🚨 Gemini API error in findSpecialists:', error)
+    return { 
+      specialists: [], 
+      error: 'Failed to connect to Gemini API',
+      details: error instanceof Error ? error.message : String(error)
+    }
   }
 }
 
@@ -80,24 +103,42 @@ export async function explainCosts(
   `
 
   try {
-    const result = await geminiPro.generateContent(prompt)
+    if (!process.env.GEMINI_API_KEY) {
+      console.error('🚨 Gemini API key missing for cost analysis')
+      return {
+        error: 'Gemini API not configured',
+        estimatedCost: "Unable to estimate",
+        explanation: "Please set GEMINI_API_KEY environment variable to enable cost analysis."
+      }
+    }
+
+    console.log('💰 Analyzing costs using Gemini AI...')
+    const result = await geminiFlash.generateContent(prompt)
     const response = await result.response
     const text = response.text()
     
+    console.log('✅ Gemini cost analysis response received')
+    
     const jsonMatch = text.match(/\{[\s\S]*\}/)
     if (jsonMatch) {
-      return JSON.parse(jsonMatch[0])
+      const parsed = JSON.parse(jsonMatch[0])
+      console.log('📊 Cost analysis completed successfully')
+      return parsed
     }
     
+    console.warn('⚠️  No valid JSON found in cost analysis response')
     return {
       estimatedCost: "Unable to estimate",
-      explanation: "Please contact your insurance provider for specific cost information."
+      explanation: "Please contact your insurance provider for specific cost information.",
+      error: "Invalid response format"
     }
   } catch (error) {
-    console.error('Gemini API error:', error)
+    console.error('🚨 Gemini API error in explainCosts:', error)
     return {
       estimatedCost: "Unable to estimate",
-      explanation: "Please contact your insurance provider for specific cost information."
+      explanation: "Please contact your insurance provider for specific cost information.",
+      error: 'Failed to connect to Gemini API',
+      details: error instanceof Error ? error.message : String(error)
     }
   }
 }
@@ -142,19 +183,39 @@ export async function summarizeRecords(
       `
 
   try {
-    const result = await geminiPro.generateContent(prompt)
+    if (!process.env.GEMINI_API_KEY) {
+      console.error('🚨 Gemini API key missing for document analysis')
+      return { 
+        error: "Gemini API not configured",
+        message: "Please set GEMINI_API_KEY environment variable to enable document analysis."
+      }
+    }
+
+    console.log('📄 Analyzing document using Gemini AI...')
+    const result = await geminiPro.generateContent(prompt) // Use Pro for complex document analysis
     const response = await result.response
     const text = response.text()
     
+    console.log('✅ Gemini document analysis response received')
+    
     const jsonMatch = text.match(/\{[\s\S]*\}/)
     if (jsonMatch) {
-      return JSON.parse(jsonMatch[0])
+      const parsed = JSON.parse(jsonMatch[0])
+      console.log('📋 Document analysis completed successfully')
+      return parsed
     }
     
-    return { error: "Unable to process document" }
+    console.warn('⚠️  No valid JSON found in document analysis response')
+    return { 
+      error: "Invalid response format",
+      message: "Unable to parse Gemini response"
+    }
   } catch (error) {
-    console.error('Gemini API error:', error)
-    return { error: "Unable to process document" }
+    console.error('🚨 Gemini API error in summarizeRecords:', error)
+    return { 
+      error: "Failed to connect to Gemini API",
+      details: error instanceof Error ? error.message : String(error)
+    }
   }
 }
 
@@ -189,18 +250,38 @@ export async function generateReferral(
   `
 
   try {
-    const result = await geminiPro.generateContent(prompt)
+    if (!process.env.GEMINI_API_KEY) {
+      console.error('🚨 Gemini API key missing for referral generation')
+      return { 
+        error: "Gemini API not configured",
+        message: "Please set GEMINI_API_KEY environment variable to enable referral generation."
+      }
+    }
+
+    console.log('📝 Generating referral using Gemini AI...')
+    const result = await geminiPro.generateContent(prompt) // Use Pro for complex referral generation
     const response = await result.response
     const text = response.text()
     
+    console.log('✅ Gemini referral generation response received')
+    
     const jsonMatch = text.match(/\{[\s\S]*\}/)
     if (jsonMatch) {
-      return JSON.parse(jsonMatch[0])
+      const parsed = JSON.parse(jsonMatch[0])
+      console.log('📋 Referral generated successfully')
+      return parsed
     }
     
-    return { error: "Unable to generate referral" }
+    console.warn('⚠️  No valid JSON found in referral generation response')
+    return { 
+      error: "Invalid response format",
+      message: "Unable to parse Gemini response"
+    }
   } catch (error) {
-    console.error('Gemini API error:', error)
-    return { error: "Unable to generate referral" }
+    console.error('🚨 Gemini API error in generateReferral:', error)
+    return { 
+      error: "Failed to connect to Gemini API",
+      details: error instanceof Error ? error.message : String(error)
+    }
   }
 }

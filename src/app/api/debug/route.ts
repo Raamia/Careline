@@ -44,11 +44,31 @@ export async function GET() {
       supabaseCheck = { error: 'Failed to import/connect', details: error instanceof Error ? error.message : String(error) }
     }
 
+    // Check Gemini API (basic check only)
+    let geminiCheck = null
+    try {
+      if (process.env.GEMINI_API_KEY) {
+        geminiCheck = {
+          hasApiKey: true,
+          keyLength: process.env.GEMINI_API_KEY.length,
+          status: 'Ready for testing (use /api/gemini/debug for full test)'
+        }
+      } else {
+        geminiCheck = {
+          hasApiKey: false,
+          status: 'API key not configured'
+        }
+      }
+    } catch (error) {
+      geminiCheck = { error: 'Failed to check Gemini setup', details: error instanceof Error ? error.message : String(error) }
+    }
+
     return NextResponse.json({
       timestamp: new Date().toISOString(),
       environment: envCheck,
       session: sessionCheck,
-      supabase: supabaseCheck
+      supabase: supabaseCheck,
+      gemini: geminiCheck
     })
   } catch (error) {
     return NextResponse.json(
