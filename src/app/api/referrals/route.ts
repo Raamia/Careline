@@ -54,7 +54,24 @@ export async function GET() {
     return NextResponse.json({ referrals })
   } catch (error) {
     console.error('Error fetching referrals:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    
+    // Better error serialization for debugging
+    let errorDetails = 'Unknown error'
+    if (error instanceof Error) {
+      errorDetails = error.message
+    } else if (typeof error === 'object' && error !== null) {
+      errorDetails = JSON.stringify(error, null, 2)
+    } else {
+      errorDetails = String(error)
+    }
+    
+    console.error('Serialized fetch error details:', errorDetails)
+    
+    return NextResponse.json({ 
+      error: 'Failed to fetch referrals',
+      details: errorDetails,
+      timestamp: new Date().toISOString()
+    }, { status: 500 })
   }
 }
 
@@ -115,6 +132,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ referral }, { status: 201 })
   } catch (error) {
     console.error('🚨 Error creating referral:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    
+    // Better error serialization for debugging
+    let errorDetails = 'Unknown error'
+    if (error instanceof Error) {
+      errorDetails = error.message
+    } else if (typeof error === 'object' && error !== null) {
+      errorDetails = JSON.stringify(error, null, 2)
+    } else {
+      errorDetails = String(error)
+    }
+    
+    console.error('🚨 Serialized referral error details:', errorDetails)
+    
+    return NextResponse.json({ 
+      error: 'Failed to create referral',
+      details: errorDetails,
+      timestamp: new Date().toISOString()
+    }, { status: 500 })
   }
 }
