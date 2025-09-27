@@ -50,13 +50,30 @@ export default function DashboardPage() {
         // Load referrals
         const userReferrals = await getReferrals();
         setReferrals(userReferrals);
+      } else {
+        // If sync fails, create a temporary user object for demo
+        setUserData({
+          id: 'demo-user',
+          role: 'patient',
+          name: user?.name || 'Demo User',
+          email: user?.email || 'demo@example.com'
+        });
+        setReferrals([]); // Empty referrals for demo
       }
     } catch (error) {
       console.error('Error initializing user:', error);
+      // Create a demo user if database connection fails
+      setUserData({
+        id: 'demo-user',
+        role: 'patient',
+        name: user?.name || 'Demo User',
+        email: user?.email || 'demo@example.com'
+      });
+      setReferrals([]); // Empty referrals for demo
     } finally {
       setLoadingData(false);
     }
-  }, [syncUser, getReferrals]);
+  }, [syncUser, getReferrals, user?.name, user?.email]);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -70,6 +87,11 @@ export default function DashboardPage() {
   }, [user, isLoading, router, userData, initializeUser]);
 
   const handleCreateReferral = async () => {
+    if (userData.id === 'demo-user') {
+      alert('Demo Mode: To create real referrals, please set up Supabase database using the INTEGRATION_SETUP.md guide.');
+      return;
+    }
+
     const specialty = prompt('What specialty do you need? (e.g., Cardiology, Dermatology)');
     const complaint = prompt('Briefly describe your chief complaint:');
     
@@ -87,6 +109,11 @@ export default function DashboardPage() {
   };
 
   const handleAskGemini = async (referral: ReferralData) => {
+    if (userData.id === 'demo-user') {
+      alert('Demo Mode: To use AI specialist search, please set up Gemini API using the INTEGRATION_SETUP.md guide.');
+      return;
+    }
+
     const result = await findSpecialists(referral.specialty, '32304', 'Blue Cross');
     if (result?.specialists?.length > 0) {
       alert(`Found ${result.specialists.length} specialists:\n\n${result.specialists.map((s: { name: string; practice: string }) => `${s.name} - ${s.practice}`).join('\n')}`);
@@ -94,6 +121,11 @@ export default function DashboardPage() {
   };
 
   const handleCostExplainer = async () => {
+    if (userData.id === 'demo-user') {
+      alert('Demo Mode: To use AI cost analysis, please set up Gemini API using the INTEGRATION_SETUP.md guide.');
+      return;
+    }
+
     const procedure = prompt('What procedure do you need cost information for?');
     const insurance = prompt('What insurance do you have? (or press Cancel to skip)');
     
@@ -106,6 +138,11 @@ export default function DashboardPage() {
   };
 
   const handleRecordsSummarizer = async () => {
+    if (userData.id === 'demo-user') {
+      alert('Demo Mode: To use AI document analysis, please set up Gemini API using the INTEGRATION_SETUP.md guide.');
+      return;
+    }
+
     const documentText = prompt('Paste your medical document text or summary:');
     if (documentText) {
       const result = await summarizeRecords(documentText, undefined, userData?.role === 'doctor');
@@ -117,6 +154,11 @@ export default function DashboardPage() {
   };
 
   const handleGenerateReferral = async (referral: ReferralData) => {
+    if (userData.id === 'demo-user') {
+      alert('Demo Mode: To use AI referral generation, please set up Gemini API using the INTEGRATION_SETUP.md guide.');
+      return;
+    }
+
     const result = await generateReferral(
       { name: user?.name || 'Patient', age: 35 }, // Demo patient info
       referral.chief_complaint,
@@ -603,6 +645,32 @@ export default function DashboardPage() {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
+          {/* Database Status Notice */}
+          {userData.id === 'demo-user' && (
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg mb-6">
+              <div className="px-4 py-5 sm:p-6">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-yellow-800">
+                      Demo Mode - Database Not Connected
+                    </h3>
+                    <div className="mt-2 text-sm text-yellow-700">
+                      <p>
+                        You're viewing a demo version. To enable full functionality with real data and AI features, 
+                        please set up Supabase and Gemini API using the <code className="bg-yellow-100 px-1 rounded">INTEGRATION_SETUP.md</code> guide.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Welcome Message */}
           <div className="bg-white overflow-hidden shadow rounded-lg mb-6">
             <div className="px-4 py-5 sm:p-6">
