@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ReferralCreatedEvent } from '@/types';
+import { ReferralCreatedEvent } from '../../../../types';
 
 export async function POST(request: NextRequest) {
   try {
