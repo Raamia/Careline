@@ -31,36 +31,41 @@ export async function findSpecialists(
     locationDescription = `the ${location} area`;
   }
 
-  const prompt = `
-    Act as a healthcare directory agent. Find specialists near ${locationDescription}.
-    
+    const prompt = `
+    Act as a healthcare directory agent. Find REAL medical specialists with actual office addresses near ${locationDescription}.
+
     Specialty needed: ${specialty}
     Insurance: ${insuranceType}
     Location: ${location}
-    
-    Provide 3-5 realistic recommendations in this JSON format:
+
+    Provide 3-5 recommendations with ACTUAL office addresses in this JSON format:
     {
       "specialists": [
         {
-          "name": "Dr. Full Name",
-          "practice": "Practice Name",
-          "address": "Full Street Address, City, State ZIP",
-          "phone": "(555) 123-4567",
+          "name": "Dr. [Real Full Name]",
+          "practice": "[Real Practice Name]",
+          "address": "[Actual Street Address], [City], [State] [ZIP Code]",
+          "phone": "[Real Phone Number]",
           "inNetwork": true,
           "rating": 4.8,
           "notes": "Brief note about specialties, subspecialties, or what makes them stand out"
         }
       ]
     }
-    
-    Important guidelines:
-    - Use realistic doctor names and practice names for the area
-    - Include complete addresses with real street names, city, state, and ZIP codes
-    - Make phone numbers follow (XXX) XXX-XXXX format
-    - Set inNetwork to true for most specialists (80% should be in-network)
-    - Use ratings between 4.2 and 4.9
-    - Include helpful notes about their expertise or patient care approach
-    - Ensure all information feels authentic for ${locationDescription}
+
+    CRITICAL REQUIREMENTS:
+    - Use REAL, VERIFIED medical office addresses (not made-up ones)
+    - Include actual street names, building numbers, and real ZIP codes
+    - Use real doctor names and practice names that exist in the area
+    - Provide authentic phone numbers in (XXX) XXX-XXXX format
+    - Ensure addresses are actual medical office locations, not residential addresses
+    - Focus on specialists who actually practice in ${locationDescription}
+    - Verify that these are legitimate healthcare providers with real offices
+
+    Examples of real addresses in ${locationDescription}:
+    - Medical office buildings, hospitals, or private practices
+    - Addresses should include suite numbers if applicable
+    - Street names should be real roads in the area
   `
 
   try {
