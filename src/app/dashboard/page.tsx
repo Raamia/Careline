@@ -43,22 +43,38 @@ export default function DashboardPage() {
   const initializeUser = useCallback(async () => {
     try {
       setLoadingData(true);
-      // Sync user with database and get role
-      const syncedUser = await syncUser('patient'); // Default to patient, can be changed in signup
-      if (syncedUser) {
-        setUserData(syncedUser);
-        // Load referrals
-        const userReferrals = await getReferrals();
-        setReferrals(userReferrals);
-      } else {
-        // If sync fails, create a temporary user object for demo
+      console.log('Initializing user...');
+      
+      // Try to get user from database first
+      const userReferrals = await getReferrals();
+      console.log('Referrals response:', userReferrals);
+      
+      // If we can get referrals, the user exists in database
+      if (Array.isArray(userReferrals)) {
+        // User exists, create real user object
         setUserData({
-          id: 'demo-user',
-          role: 'patient',
-          name: user?.name || 'Demo User',
-          email: user?.email || 'demo@example.com'
+          id: user?.sub || 'authenticated-user',
+          role: 'patient', // Can be updated from database later
+          name: user?.name || 'Patient',
+          email: user?.email || 'patient@example.com'
         });
-        setReferrals([]); // Empty referrals for demo
+        setReferrals(userReferrals);
+        console.log('User initialized with real data');
+      } else {
+        // Try to sync user with database
+        console.log('Syncing user with database...');
+        const syncedUser = await syncUser('patient');
+        console.log('Sync result:', syncedUser);
+        
+        if (syncedUser) {
+          setUserData(syncedUser);
+          // Try to get referrals again
+          const newUserReferrals = await getReferrals();
+          setReferrals(Array.isArray(newUserReferrals) ? newUserReferrals : []);
+          console.log('User synced successfully');
+        } else {
+          throw new Error('Failed to sync user');
+        }
       }
     } catch (error) {
       console.error('Error initializing user:', error);
@@ -73,7 +89,7 @@ export default function DashboardPage() {
     } finally {
       setLoadingData(false);
     }
-  }, [syncUser, getReferrals, user?.name, user?.email]);
+  }, [syncUser, getReferrals, user?.name, user?.email, user?.sub]);
 
   useEffect(() => {
     if (!isLoading && !user) {
