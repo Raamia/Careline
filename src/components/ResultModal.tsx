@@ -6,9 +6,7 @@ interface Specialist {
   name: string;
   practice: string;
   address?: string;
-  phone?: string;
   notes?: string;
-  inNetwork?: boolean;
   rating?: number;
 }
 
@@ -82,7 +80,7 @@ export default function ResultModal({ isOpen, onClose, title, type, data }: Resu
               <p className="text-sm font-medium text-blue-200">
                 Found <strong>{specialistsData.specialists.length}</strong> specialists in your area
               </p>
-              <p className="text-xs text-blue-300/70">Contact information and scheduling details below</p>
+              <p className="text-xs text-blue-300/70">Provider details and location information below</p>
             </div>
           </div>
         </div>
@@ -97,11 +95,6 @@ export default function ResultModal({ isOpen, onClose, title, type, data }: Resu
                     <p className="text-slate-300 font-medium">{specialist.practice}</p>
                   </div>
                   <div className="flex flex-col items-end space-y-2">
-                    {specialist.inNetwork && (
-                      <span className="status-badge active text-xs">
-                        In Network
-                      </span>
-                    )}
                     {specialist.rating && (
                       <div className="flex items-center space-x-1">
                         <svg className="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
@@ -124,16 +117,6 @@ export default function ResultModal({ isOpen, onClose, title, type, data }: Resu
                     </div>
                   )}
                   
-                  {specialist.phone && (
-                    <div className="flex items-center space-x-2">
-                      <svg className="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                      </svg>
-                      <a href={`tel:${specialist.phone}`} className="text-sm text-blue-400 hover:text-blue-300 transition-colors">
-                        {specialist.phone}
-                      </a>
-                    </div>
-                  )}
                   
                   {specialist.notes && (
                     <div className="mt-3 p-3 bg-slate-800/50 rounded-lg border border-slate-700">
