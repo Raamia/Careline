@@ -3,12 +3,51 @@
 import { useState } from 'react';
 import Modal from './Modal';
 
+interface Specialist {
+  name: string;
+  practice: string;
+  address?: string;
+  phone?: string;
+  notes?: string;
+  inNetwork?: boolean;
+  rating?: number;
+}
+
+interface SpecialistsData {
+  specialists: Specialist[];
+}
+
+interface CostsData {
+  estimatedCost: string;
+  explanation: string;
+  copay?: string;
+  deductible?: string;
+  notes?: string;
+}
+
+interface SummaryData {
+  clinicalSummary?: string;
+  patientSummary?: string;
+  keyFindings?: string[];
+  keyPoints?: string[];
+  recommendations?: string[];
+  nextSteps?: string[];
+  redFlags?: string[];
+}
+
+interface ReferralData {
+  patientInstructions?: string;
+  estimatedTimeframe?: string;
+  urgencyNotes?: string;
+  requiredDocuments?: string[];
+}
+
 interface ResultModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   type: 'specialists' | 'costs' | 'summary' | 'referral';
-  data: any;
+  data: unknown;
 }
 
 export default function ResultModal({ isOpen, onClose, title, type, data }: ResultModalProps) {
@@ -21,7 +60,9 @@ export default function ResultModal({ isOpen, onClose, title, type, data }: Resu
   };
 
   const renderSpecialists = () => {
-    if (!data?.specialists?.length) {
+    const specialistsData = data as SpecialistsData;
+    
+    if (!specialistsData?.specialists?.length) {
       return (
         <div className="text-center py-8">
           <div className="text-gray-400 mb-2">
@@ -38,11 +79,11 @@ export default function ResultModal({ isOpen, onClose, title, type, data }: Resu
       <div className="space-y-4">
         <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
           <p className="text-sm text-purple-700">
-            Found <strong>{data.specialists.length}</strong> specialists in your area. Contact information and scheduling details below.
+            Found <strong>{specialistsData.specialists.length}</strong> specialists in your area. Contact information and scheduling details below.
           </p>
         </div>
         
-        {data.specialists.map((specialist: any, index: number) => (
+        {specialistsData.specialists.map((specialist: Specialist, index: number) => (
           <div key={index} className="border border-gray-200 rounded-lg p-4 hover:border-purple-300 transition-colors duration-200">
             <div className="flex justify-between items-start">
               <div className="flex-1">
@@ -78,47 +119,52 @@ export default function ResultModal({ isOpen, onClose, title, type, data }: Resu
     );
   };
 
-  const renderCosts = () => (
-    <div className="space-y-4">
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="font-semibold text-blue-900 mb-2">Cost Breakdown</h4>
-        <div className="space-y-2">
-          <div className="flex justify-between">
-            <span className="text-blue-700">Estimated Cost:</span>
-            <span className="font-semibold text-blue-900">{data.estimatedCost}</span>
+  const renderCosts = () => {
+    const costsData = data as CostsData;
+    
+    return (
+      <div className="space-y-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <h4 className="font-semibold text-blue-900 mb-2">Cost Breakdown</h4>
+          <div className="space-y-2">
+            <div className="flex justify-between">
+              <span className="text-blue-700">Estimated Cost:</span>
+              <span className="font-semibold text-blue-900">{costsData.estimatedCost}</span>
+            </div>
+            {costsData.copay && (
+              <div className="flex justify-between">
+                <span className="text-blue-700">Your Copay:</span>
+                <span className="font-semibold text-blue-900">{costsData.copay}</span>
+              </div>
+            )}
+            {costsData.deductible && (
+              <div className="flex justify-between">
+                <span className="text-blue-700">Deductible:</span>
+                <span className="font-semibold text-blue-900">{costsData.deductible}</span>
+              </div>
+            )}
           </div>
-          {data.copay && (
-            <div className="flex justify-between">
-              <span className="text-blue-700">Your Copay:</span>
-              <span className="font-semibold text-blue-900">{data.copay}</span>
-            </div>
-          )}
-          {data.deductible && (
-            <div className="flex justify-between">
-              <span className="text-blue-700">Deductible:</span>
-              <span className="font-semibold text-blue-900">{data.deductible}</span>
-            </div>
-          )}
         </div>
-      </div>
-      
-      <div className="bg-gray-50 rounded-lg p-4">
-        <h4 className="font-semibold text-gray-900 mb-2">Explanation</h4>
-        <p className="text-gray-700 leading-relaxed">{data.explanation}</p>
-      </div>
-      
-      {data.notes && (
-        <div className="border-l-4 border-yellow-400 bg-yellow-50 p-4">
-          <p className="text-yellow-800 text-sm">{data.notes}</p>
+        
+        <div className="bg-gray-50 rounded-lg p-4">
+          <h4 className="font-semibold text-gray-900 mb-2">Explanation</h4>
+          <p className="text-gray-700 leading-relaxed">{costsData.explanation}</p>
         </div>
-      )}
-    </div>
-  );
+        
+        {costsData.notes && (
+          <div className="border-l-4 border-yellow-400 bg-yellow-50 p-4">
+            <p className="text-yellow-800 text-sm">{costsData.notes}</p>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const renderSummary = () => {
-    const summary = data.clinicalSummary || data.patientSummary;
-    const points = data.keyFindings || data.keyPoints || [];
-    const recommendations = data.recommendations || data.nextSteps || [];
+    const summaryData = data as SummaryData;
+    const summary = summaryData.clinicalSummary || summaryData.patientSummary;
+    const points = summaryData.keyFindings || summaryData.keyPoints || [];
+    const recommendations = summaryData.recommendations || summaryData.nextSteps || [];
     
     return (
       <div className="space-y-4">
@@ -144,7 +190,7 @@ export default function ResultModal({ isOpen, onClose, title, type, data }: Resu
         {recommendations.length > 0 && (
           <div>
             <h4 className="font-semibold text-gray-900 mb-2">
-              {data.recommendations ? 'Recommendations' : 'Next Steps'}
+              {summaryData.recommendations ? 'Recommendations' : 'Next Steps'}
             </h4>
             <ul className="space-y-1">
               {recommendations.map((rec: string, index: number) => (
@@ -157,11 +203,11 @@ export default function ResultModal({ isOpen, onClose, title, type, data }: Resu
           </div>
         )}
         
-        {data.redFlags && data.redFlags.length > 0 && (
+        {summaryData.redFlags && summaryData.redFlags.length > 0 && (
           <div className="border-l-4 border-red-400 bg-red-50 p-4">
             <h4 className="font-semibold text-red-900 mb-2">⚠️ Important Notes</h4>
             <ul className="space-y-1">
-              {data.redFlags.map((flag: string, index: number) => (
+              {summaryData.redFlags.map((flag: string, index: number) => (
                 <li key={index} className="text-red-800 text-sm">{flag}</li>
               ))}
             </ul>
@@ -171,53 +217,57 @@ export default function ResultModal({ isOpen, onClose, title, type, data }: Resu
     );
   };
 
-  const renderReferral = () => (
-    <div className="space-y-4">
-      <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
-        <h4 className="font-semibold text-indigo-900 mb-2">Referral Generated</h4>
-        <p className="text-indigo-800 text-sm">Your referral packet has been created and is ready for your healthcare provider.</p>
-      </div>
-      
-      {data.patientInstructions && (
-        <div>
-          <h4 className="font-semibold text-gray-900 mb-2">Patient Instructions</h4>
-          <div className="bg-gray-50 rounded-lg p-4">
-            <p className="text-gray-700 leading-relaxed">{data.patientInstructions}</p>
-          </div>
+  const renderReferral = () => {
+    const referralData = data as ReferralData;
+    
+    return (
+      <div className="space-y-4">
+        <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+          <h4 className="font-semibold text-indigo-900 mb-2">Referral Generated</h4>
+          <p className="text-indigo-800 text-sm">Your referral packet has been created and is ready for your healthcare provider.</p>
         </div>
-      )}
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {data.estimatedTimeframe && (
-          <div className="bg-blue-50 rounded-lg p-3">
-            <h5 className="font-medium text-blue-900 mb-1">Timeline</h5>
-            <p className="text-blue-800 text-sm">{data.estimatedTimeframe}</p>
+        
+        {referralData.patientInstructions && (
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-2">Patient Instructions</h4>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <p className="text-gray-700 leading-relaxed">{referralData.patientInstructions}</p>
+            </div>
           </div>
         )}
         
-        {data.urgencyNotes && (
-          <div className="bg-yellow-50 rounded-lg p-3">
-            <h5 className="font-medium text-yellow-900 mb-1">Priority</h5>
-            <p className="text-yellow-800 text-sm">{data.urgencyNotes}</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {referralData.estimatedTimeframe && (
+            <div className="bg-blue-50 rounded-lg p-3">
+              <h5 className="font-medium text-blue-900 mb-1">Timeline</h5>
+              <p className="text-blue-800 text-sm">{referralData.estimatedTimeframe}</p>
+            </div>
+          )}
+          
+          {referralData.urgencyNotes && (
+            <div className="bg-yellow-50 rounded-lg p-3">
+              <h5 className="font-medium text-yellow-900 mb-1">Priority</h5>
+              <p className="text-yellow-800 text-sm">{referralData.urgencyNotes}</p>
+            </div>
+          )}
+        </div>
+        
+        {referralData.requiredDocuments && referralData.requiredDocuments.length > 0 && (
+          <div>
+            <h4 className="font-semibold text-gray-900 mb-2">Required Documents</h4>
+            <ul className="space-y-1">
+              {referralData.requiredDocuments.map((doc: string, index: number) => (
+                <li key={index} className="flex items-center">
+                  <span className="text-indigo-500 mr-2">📄</span>
+                  <span className="text-gray-700">{doc}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
       </div>
-      
-      {data.requiredDocuments && data.requiredDocuments.length > 0 && (
-        <div>
-          <h4 className="font-semibold text-gray-900 mb-2">Required Documents</h4>
-          <ul className="space-y-1">
-            {data.requiredDocuments.map((doc: string, index: number) => (
-              <li key={index} className="flex items-center">
-                <span className="text-indigo-500 mr-2">📄</span>
-                <span className="text-gray-700">{doc}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
+    );
+  };
 
   const getContent = () => {
     switch (type) {

@@ -43,7 +43,7 @@ export default function DashboardPage() {
   const [resultData, setResultData] = useState<{
     title: string;
     type: 'specialists' | 'costs' | 'summary' | 'referral';
-    data: any;
+    data: unknown;
   } | null>(null);
   const { 
     syncUser, 
