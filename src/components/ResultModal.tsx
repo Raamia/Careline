@@ -205,7 +205,7 @@ export default function ResultModal({ isOpen, onClose, title, type, data }: Resu
         
         {summaryData.redFlags && summaryData.redFlags.length > 0 && (
           <div className="border-l-4 border-red-400 bg-red-50 p-4">
-            <h4 className="font-semibold text-red-900 mb-2">⚠️ Important Notes</h4>
+            <h4 className="font-semibold text-red-900 mb-2">Important Notes</h4>
             <ul className="space-y-1">
               {summaryData.redFlags.map((flag: string, index: number) => (
                 <li key={index} className="text-red-800 text-sm">{flag}</li>
@@ -258,7 +258,7 @@ export default function ResultModal({ isOpen, onClose, title, type, data }: Resu
             <ul className="space-y-1">
               {referralData.requiredDocuments.map((doc: string, index: number) => (
                 <li key={index} className="flex items-center">
-                  <span className="text-indigo-500 mr-2">📄</span>
+                  <span className="text-indigo-500 mr-2">•</span>
                   <span className="text-gray-700">{doc}</span>
                 </li>
               ))}
