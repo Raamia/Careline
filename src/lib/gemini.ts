@@ -114,13 +114,12 @@ export async function explainCosts(
     Provide cost breakdown in this JSON format:
     {
       "estimatedCost": "$250-400",
-      "copay": "$50",
+      "copay": "$50", 
       "deductible": "$0-200",
-      "explanation": "Plain English explanation of what patient will pay",
-      "notes": "Additional notes about coverage or requirements"
+      "explanation": "2-3 sentences explaining what the patient will pay and why, in simple terms"
     }
     
-    Make the explanation simple and patient-friendly.
+    Keep the explanation concise - maximum 2-3 sentences that clearly explain the costs and coverage.
   `
 
   try {

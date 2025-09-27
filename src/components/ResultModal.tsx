@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Modal from './Modal';
 
 interface Specialist {
@@ -51,13 +50,6 @@ interface ResultModalProps {
 }
 
 export default function ResultModal({ isOpen, onClose, title, type, data }: ResultModalProps) {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
 
   const renderSpecialists = () => {
     const specialistsData = data as SpecialistsData;
@@ -150,22 +142,6 @@ export default function ResultModal({ isOpen, onClose, title, type, data }: Resu
                   )}
                 </div>
                 
-                <div className="flex space-x-3 mt-4">
-                  <button 
-                    onClick={() => handleCopy(`${specialist.name}\n${specialist.practice}\n${specialist.address}\n${specialist.phone}`)}
-                    className="enterprise-button secondary text-xs px-3 py-1.5"
-                  >
-                    Copy Info
-                  </button>
-                  {specialist.phone && (
-                    <a 
-                      href={`tel:${specialist.phone}`}
-                      className="enterprise-button text-xs px-3 py-1.5"
-                    >
-                      Call Now
-                    </a>
-                  )}
-                </div>
               </div>
             </div>
           </div>
@@ -178,39 +154,31 @@ export default function ResultModal({ isOpen, onClose, title, type, data }: Resu
     const costsData = data as CostsData;
     
     return (
-      <div className="space-y-4">
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h4 className="font-semibold text-blue-900 mb-2">Cost Breakdown</h4>
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span className="text-blue-700">Estimated Cost:</span>
-              <span className="font-semibold text-blue-900">{costsData.estimatedCost}</span>
+      <div className="space-y-6">
+        <div className="enterprise-card border-slate-600 p-6">
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <span className="text-slate-300">Estimated Cost:</span>
+              <span className="font-bold text-slate-100 text-xl">{costsData.estimatedCost}</span>
             </div>
             {costsData.copay && (
-              <div className="flex justify-between">
-                <span className="text-blue-700">Your Copay:</span>
-                <span className="font-semibold text-blue-900">{costsData.copay}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-300">Your Copay:</span>
+                <span className="font-semibold text-slate-100">{costsData.copay}</span>
               </div>
             )}
             {costsData.deductible && (
-              <div className="flex justify-between">
-                <span className="text-blue-700">Deductible:</span>
-                <span className="font-semibold text-blue-900">{costsData.deductible}</span>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-300">Deductible:</span>
+                <span className="font-semibold text-slate-100">{costsData.deductible}</span>
               </div>
             )}
           </div>
         </div>
         
-        <div className="bg-gray-50 rounded-lg p-4">
-          <h4 className="font-semibold text-gray-900 mb-2">Explanation</h4>
-          <p className="text-gray-700 leading-relaxed">{costsData.explanation}</p>
+        <div className="enterprise-card border-slate-600 p-6">
+          <p className="text-slate-200 leading-relaxed">{costsData.explanation}</p>
         </div>
-        
-        {costsData.notes && (
-          <div className="border-l-4 border-yellow-400 bg-yellow-50 p-4">
-            <p className="text-yellow-800 text-sm">{costsData.notes}</p>
-          </div>
-        )}
       </div>
     );
   };
@@ -334,52 +302,11 @@ export default function ResultModal({ isOpen, onClose, title, type, data }: Resu
     }
   };
 
-  const getActionButton = () => {
-    const text = JSON.stringify(data, null, 2);
-    
-    return (
-      <button
-        onClick={() => handleCopy(text)}
-        className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-200 flex items-center space-x-2"
-      >
-        {copied ? (
-          <>
-            <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-            <span className="text-green-600">Copied!</span>
-          </>
-        ) : (
-          <>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-            </svg>
-            <span>Copy Results</span>
-          </>
-        )}
-      </button>
-    );
-  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title} maxWidth="xl">
       <div className="space-y-6">
         {getContent()}
-        
-        <div className="flex justify-between items-center pt-4 border-t border-gray-200">
-          <p className="text-xs text-gray-500">
-            Results generated by Careline AI • Always consult with healthcare professionals
-          </p>
-          <div className="flex space-x-3">
-            {getActionButton()}
-            <button
-              onClick={onClose}
-              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors duration-200"
-            >
-              Close
-            </button>
-          </div>
-        </div>
       </div>
     </Modal>
   );
