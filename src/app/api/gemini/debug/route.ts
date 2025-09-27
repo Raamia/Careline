@@ -14,7 +14,28 @@ export async function GET() {
     const hasApiKey = !!process.env.GEMINI_API_KEY
     const apiKeyLength = process.env.GEMINI_API_KEY?.length || 0
     
-    const results = {
+    const results: {
+      timestamp: string;
+      environment: {
+        hasGeminiApiKey: boolean;
+        apiKeyLength: string;
+        nodeEnv: string | undefined;
+      };
+      tests: {
+        connectionTest?: {
+          success: boolean;
+          model?: string;
+          responseReceived?: boolean;
+          responseLength?: number;
+          rawResponse?: string;
+          jsonParsed?: boolean;
+          parsedResponse?: any;
+          parseError?: string;
+          error?: string;
+          errorType?: string;
+        };
+      };
+    } = {
       timestamp: new Date().toISOString(),
       environment: {
         hasGeminiApiKey: hasApiKey,

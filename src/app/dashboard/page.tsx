@@ -402,17 +402,17 @@ export default function DashboardPage() {
             <h1 className="text-3xl font-bold text-slate-100">Provider Console</h1>
             <p className="text-slate-400 mt-1">AI-powered referral management and patient insights</p>
           </div>
-          <div className="flex space-x-3">
-            <button
-              onClick={() => setShowRecordsModal(true)}
-              className="enterprise-button secondary flex items-center space-x-2"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <span>Analyze Documents</span>
-            </button>
-          </div>
+                   <div className="flex space-x-3">
+                     <button
+                       onClick={handleRecordsSummarizer}
+                       className="enterprise-button secondary flex items-center space-x-2"
+                     >
+                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                       </svg>
+                       <span>Analyze Documents</span>
+                     </button>
+                   </div>
         </div>
 
         {/* Clinical Metrics */}
@@ -589,18 +589,18 @@ export default function DashboardPage() {
                 </svg>
                 Overview
               </a>
-              <button onClick={() => setShowRecordsModal(true)} className="nav-item w-full text-left">
-                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Document Analysis
-              </button>
-              <button onClick={() => setShowCostModal(true)} className="nav-item w-full text-left">
-                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
-                Cost Intelligence
-              </button>
+                       <button onClick={handleRecordsSummarizer} className="nav-item w-full text-left">
+                         <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                         </svg>
+                         Document Analysis
+                       </button>
+                       <button onClick={handleCostExplainer} className="nav-item w-full text-left">
+                         <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                         </svg>
+                         Cost Intelligence
+                       </button>
               <button onClick={() => handleAskGemini({ specialty: 'General', id: '', chief_complaint: '', status: '', priority: '', created_at: '' })} className="nav-item w-full text-left">
                 <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
