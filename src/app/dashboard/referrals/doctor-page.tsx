@@ -192,7 +192,7 @@ export default function DoctorReferralsPage() {
       // Mock API call
       setReferrals(prev => prev.map(ref => 
         ref.id === referralId 
-          ? { ...ref, status: 'accepted' }
+          ? { ...ref, status: 'scheduled' }
           : ref
       ));
     } catch (error) {
@@ -206,7 +206,7 @@ export default function DoctorReferralsPage() {
       // Mock API call
       setReferrals(prev => prev.map(ref => 
         ref.id === referralId 
-          ? { ...ref, status: 'accepted' }
+          ? { ...ref, status: 'scheduled' }
           : ref
       ));
       setSelectedReferral(null);
