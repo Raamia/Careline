@@ -208,6 +208,7 @@ export default function DashboardPage() {
           console.warn('Failed to refresh referrals list:', refreshError);
         }
         
+
         // Success - referral is automatically added to the list above
         console.log('✅ Referral created successfully:', newReferral);
       } else {
@@ -375,10 +376,13 @@ export default function DashboardPage() {
       
       if (result && !result.error) {
         console.log('📋 Setting referral result data:', result);
+        // For existing referrals, just show the summary
         setResultData({
           title: `Referral Packet: ${referral.specialty}`,
           type: 'referral',
-          data: result
+          data: {
+            summary: result.summary
+          }
         });
         setShowResultModal(true);
       } else {
